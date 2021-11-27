@@ -11,7 +11,9 @@ import java.awt.Color;
  */
 public class JuliaSet {
 
-
+  /**
+   * The max radius of the circle
+   */
   private final double RADIUS = 2.0;
 
   /**
@@ -33,22 +35,35 @@ public class JuliaSet {
   private final double y2;
 
   /**
-  * The discretisation step of the rectange
+  * The discretisation step of the rectange.
   */
   private final double step;
 
+  /**
+   * The height of the image.
+   */
   private final int height;
 
-  private final int width; //largeur
+  /**
+   * The width of the image.
+   */
+  private final int width;
 
+  /**
+   *  The function used for the Julia set.
+   *  Like Z(n+1) = Z(n)² + c
+   */
   private final Function <Complex,Complex> function;
 
   /**
-   * The name of the image of the julia set
+   * The name of the image of the julia set.
    */
   private String fileName = "JuliaSetTest";
 
-
+  /**
+   * Instantiates a new Julia Set
+   * @param builder  A julia set builder
+   */
   private JuliaSet(JuliaSetBuilder builder)
   {
     this.complexConstant = builder.complexConstant;
@@ -75,66 +90,132 @@ public class JuliaSet {
    */
   public static class JuliaSetBuilder {
 
+    /**
+     * The constant complex from the julia set formula z²+c
+     */
     private final Complex complexConstant;
 
+    /**
+     * Maximum iterations
+     */
+    private int maxIter = 1000;
+
+    /**
+    * The discretisation step of the rectange.
+    */
     private double step = 0.00075;
 
+    /**
+     * The rectangle of the complex plane
+     */
     private double x1 = -1;
     private double x2 = 1;
     private double y1 = -1;
     private double y2 = 1;
 
+    /**
+     *  The function used for the Julia set.
+     */
     private final Function <Complex,Complex> function;
 
+    /**
+     * The height of the image.
+     */
     private int height = 0;
+
+    /**
+     * The width of the image.
+     */
     private int width = 0;
 
-
+    /**
+     * Instantiates a JuliaSetBuilder.
+     * @param complex   A complex constant.
+     * @param function  The function for the Julia set.
+     */
     public JuliaSetBuilder(Complex complex, Function function)
     {
       this.complexConstant = complex;
       this.function = function;
     }
 
+    /**
+     * Sets the a new value for step
+     * @return The JuliaSetBuilder object
+     */
     public JuliaSetBuilder step(double step)
     {
       this.step = step;
       return this;
     }
 
+    /**
+     * Sets the a new value for x1
+     * @return The JuliaSetBuilder object
+     */
     public JuliaSetBuilder x1(int x1)
     {
         this.x1 = x1;
         return this;
     }
 
+    /**
+    * Sets the a new value for x2
+    * @return The JuliaSetBuilder object
+    */
     public JuliaSetBuilder x2(int x2)
     {
         this.x2 = x2;
         return this;
     }
 
+    /**
+    * Sets the a new value for y1
+    * @return The JuliaSetBuilder object
+    */
     public JuliaSetBuilder y1(int y1)
     {
         this.y1 = y1;
         return this;
     }
 
+    /**
+    * Sets the a new value for y2
+    * @return The JuliaSetBuilder object
+    */
     public JuliaSetBuilder y2(int y2)
     {
         this.y2 = y2;
         return this;
     }
 
+    /**
+    * Sets the a new value for height
+    * @return The JuliaSetBuilder object
+    */
     public JuliaSetBuilder height(int height)
     {
       this.height = height;
       return this;
     }
 
+    /**
+    * Sets the a new value for width
+    * @return The JuliaSetBuilder object
+    */
     public JuliaSetBuilder width(int width)
     {
       this.width = width;
+      return this;
+    }
+
+    /**
+    * Sets the a new value for maxIter
+    * @return The JuliaSetBuilder object
+    */
+    public JuliaSetBuilder maxIter(int maxIter)
+    {
+      this.maxIter = maxIter;
       return this;
     }
 
@@ -149,7 +230,7 @@ public class JuliaSet {
 
 
   /**
-   * Compute divergence on a complex point
+   * Compute divergence on a complex point.
    */
   private int computeDivergence(Complex z0)
   {
@@ -217,5 +298,8 @@ public class JuliaSet {
   	    e.printStackTrace();
   	}
   }
+
+
+
 
 }

@@ -24,73 +24,17 @@ public class App {
 
     public static void main(String[] args) {
 
-	// Complex c = Complex.of( -0.7269, +0.1889);
-	// // Complex c = Complex.of( 0 ,-0.8);
-  // //  + 0.1889i
-	// Function<Complex, Complex> f = (z) -> (z.multiply(z)).add(c);
-	// // [-1, 1] x [-1, 1] is the chosen complex plane
-	// double x1, x2, y1, y2;
-	// x1 = -1;
-	// x2 = 1;
-	// y1 = -1;
-	// y2 = 1;
-  //
-	// // 2d array of complex points
-	// double dFactor = 0.00075;
-	// int width = (int) ((Math.abs(x1) + Math.abs(x2)) / dFactor + 1.0);
-	// int height = (int)((Math.abs(y1) + Math.abs(y2)) / dFactor + 1.0);
-	// // int width = 3500;
-	// // int height = 3500;
-  //
-	// Complex[][] plane = new Complex[width][height];
-	// for(int i = 0; i < width-1; i++){
-	//     for(int j = 0; j < height - 1; j++){
-	// 	plane[i][j] =
-	// 	    Complex.of(x1 + (dFactor * i), y2 - (dFactor * j));
-	//     }
-	// }
-  //
-	// // compute divergence for each complex points
-	// int[][] arrayDivergence = new int[width][height];
-	// for(int i = 0; i < width -1; i++){
-	//     for(int j = 0; j < height -1; j++)
-  //     {
-	// 	      arrayDivergence[i][j] = computeDivergence(plane[i][j], f);
-	//     }
-	// }
-  //
-	// var img = new BufferedImage(width, height, BufferedImage. TYPE_INT_RGB);
-  // for(int i = 0; i < width -1; i++){
-  //   for(int j = 0; j < height -1; j++){
-  //     int div = arrayDivergence[i][j];
-  //     int r = div * 255 / MAX_ITER;
-  //     int g = div * 255 / MAX_ITER;
-  //     int b = 0;
-  //     // img.setRGB(i,j,(r << 16) | (g << 8) | b);
-  //     int rgb;
-  //     if(div == 999)
-  //     {
-  //       rgb = 0;
-  //     }
-  //     else
-  //     {
-  //       // rgb=Color.HSBtoRGB((float)div/MAX_ITER, 0.7f, (float)div/MAX_ITER);
-  //       rgb = Color.HSBtoRGB((float)div*20.0f/(float)MAX_ITER,1.0f,1.0f);
-  //     }
-  //     img.setRGB(i,j,rgb);
-  //   }
-  // }
-  //
-	// File file = new File("JuliaTest.png");
-  //
-	// try{
-	//     ImageIO.write(img, "PNG", file);
-	// } catch (Exception e){
-	//     e.printStackTrace();
-	// }
-
-    Complex c = Complex.of(-0.7269, +0.1889);
+    //examples of complexConstant for nice JuliaSet images
+    // Complex c = Complex.of(-0.7269, +0.1889);
     // Complex c = Complex.of(0, -0.8);
+    Complex c = Complex.of(0.355534, -0.337292);
+    // Complex c = Complex.of(-0.4, -0.59);
+    // Complex c = Complex.of(-0.54, +0.54);
+    // Complex c = Complex.of(0.34, +0.05);
+    // Complex c = Complex.of(0.355, +0.355);
+    // Complex c = Complex.of(0.37, +0.1);
+    // Complex c = Complex.of(-1.34882125854492, -0.454237874348958);
+    // Complex c = Complex.of(-0.202420806884766, -0.39527333577474);
     Function<Complex, Complex> f = (z) -> (z.multiply(z)).add(c);
     JuliaSet js = new JuliaSet.JuliaSetBuilder(c,f).build();
     js.drawImage();
