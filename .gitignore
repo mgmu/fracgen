@@ -9,3 +9,6 @@ build
 
 #java .class
 *.class
+
+#.png
+*.png
