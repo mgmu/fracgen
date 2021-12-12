@@ -44,16 +44,8 @@ public class JuliaSet {
 	this.yMin = builder.yMin;
 	this.yMax = builder.yMax;
 	this.iterationFunction = builder.iterationFunction;
-	if(builder.imageHeight <= 0 || builder.imageWidth <= 0){
-	    // scales each point of the discrete plane to a pixel of the image
-	    this.imageHeight =
-		(int) ((Math.abs(yMin) + Math.abs(yMax)) / discreteStep + 1.0);
-	    this.imageWidth =
-		(int) ((Math.abs(xMin) + Math.abs(xMax)) / discreteStep + 1.0);
-	} else {
-	    this.imageHeight = builder.imageHeight;
-	    this.imageWidth = builder.imageWidth;
-	}
+	this.imageHeight = builder.imageHeight;
+	this.imageWidth = builder.imageWidth;
     }
     
     /**
@@ -63,6 +55,7 @@ public class JuliaSet {
 
 	//required parameters
 	private final Complex complexConstant;
+	private final Function<Complex, Complex> iterationFunction;
 	    
 	// optionnal parameters for the Julia Set
 	private int maxIteration = 1000;
@@ -71,18 +64,21 @@ public class JuliaSet {
 	private double xMax = 1;
 	private double yMin = -1;
 	private double yMax = 1;
-	private Function <Complex,Complex> iterationFunction =
-	    (z) -> z.multiply(z).add(complexConstant);
 	private int imageHeight = 0;
 	private int imageWidth = 0;
 	private String fileName = "JuliaSet.png";
 
 	/**
 	 * Instantiates a JuliaSetBuilder
-	 * @param complex A complex constant
+	 * @param complexConstant The complex constant used with the
+	 * iteration function
+	 * @param iterationFunction The function used to compute the index
+	 * of divergence
 	 */
-	public JuliaSetBuilder(Complex complexConstant){
-	    this.complexConstant = complex;
+	public JuliaSetBuilder(Complex complexConstant,
+			       Function<Complex, Complex> iterationFunction){
+	    this.complexConstant = complexConstant;
+	    this.iterationFunction = iterationFunction;
 	}
 
 	/**
@@ -121,7 +117,7 @@ public class JuliaSet {
 	 * @return This JuliaSetBuilder instance
 	 */
 	public JuliaSetBuilder xMax(double xMax){
-	    this.xMas = xMax;
+	    this.xMax = xMax;
 	    return this;
 	}
 
@@ -146,14 +142,10 @@ public class JuliaSet {
 	}
 
 	/**
-	 */
-	public JuliaSetBuilder iterationFunction
-	    (Function<Complex, Complex> iterationFunction){
-	    this.iterationFunction = iterationFunction;
-	    return this;
-	}
-
-	/**
+	 * Sets the height of the image that contains the representation of
+	 * the Julia Set
+	 * @param imageHeight The height of the image
+	 * @return This JuliaSetBuilder instance
 	 */
 	public JuliaSetBuilder imageHeight(int imageHeight){
 	    this.imageHeight = imageHeight;
@@ -161,6 +153,10 @@ public class JuliaSet {
 	}
 
 	/**
+	 * Sets the width of the image that contains the representation of the
+	 * Juia Set
+	 * @param imageWidth The width of the image
+	 * @return This JuliaSetBuilder instance
 	 */
 	public JuliaSetBuilder imageWidth(int imageWidth){
 	    this.imageWidth = imageWidth;
@@ -168,10 +164,29 @@ public class JuliaSet {
 	}
 
 	/**
+	 * Sets the name of the file that contains the image of the Julia Set
+	 * @param fileName The file name
+	 * @return This JuliaSetBuilder instance
 	 */
 	public JuliaSetBuilder fileName(String fileName){
 	    this.fileName = fileName;
 	    return this;
+	}
+
+	/**
+	 * Builds a Julia Set instance from this builder
+	 * @return A new JuliaSet instance
+	 */
+	public JuliaSet build(){
+	    if(imageHeight <= 0 || imageWidth <= 0){
+		// assigns each point of the discrete plane to a pixel of
+		// the image
+		imageHeight =
+		    (int) ((Math.abs(yMin)+Math.abs(yMax))/discreteStep + 1.0);
+		imageWidth =
+		    (int) ((Math.abs(xMin)+Math.abs(xMax))/discreteStep + 1.0);
+	    }
+	    return new JuliaSet(this);
 	}
     }
 
@@ -184,7 +199,7 @@ public class JuliaSet {
 	int iteration = 0;
 	Complex zn = z0;
 	while(iteration < maxIteration - 1 && zn.modulus() <= RADIUS){
-	    zn = function.apply(zn);
+	    zn = iterationFunction.apply(zn);
 	    iteration++;
 	}
 	return iteration;
@@ -195,14 +210,16 @@ public class JuliaSet {
      * rectangle delimeted by xMin xMax yMin yMax of the complex plane
      * and strores the resulting indices in a 2D array
      * @return A 2D array containing the index of divergence of the
-     *         corresponding complex number
+     * corresponding complex number
      */
     private int[][] arrayDivergence(){
     	// compute divergence for each complex points
-    	int[][] arrayDivergence = new int[width][height];
-    	for(int i = 0; i < width -1; i++){
-    	    for(int j = 0; j < height -1; j++){
-		Complex complex = Complex.of(x1 + (step * i), y2 - (step * j));
+    	int[][] arrayDivergence = new int[imageWidth][imageHeight];
+    	for(int i = 0; i < imageWidth -1; i++){
+    	    for(int j = 0; j < imageHeight -1; j++){
+		Complex complex =
+		    Complex.of(xMin + (discreteStep * i),
+			       yMax - (discreteStep * j));
 		arrayDivergence[i][j] = computeDivergence(complex);
 	    }
     	}
@@ -214,17 +231,20 @@ public class JuliaSet {
      * by this instance
      */
     public void drawImage(){
-	var img = new BufferedImage(width, height, BufferedImage. TYPE_INT_RGB);
+	var img =
+	    new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
 	int[][] arrayDivergence = arrayDivergence();
-	for(int i = 0; i < width -1; i++){
-	    for(int j = 0; j < height -1; j++){
+	for(int i = 0; i < imageWidth -1; i++){
+	    for(int j = 0; j < imageHeight -1; j++){
 		int div = arrayDivergence[i][j];
 		int rgb;
 		if(div == 999){
 		    rgb = 0;
 		} else {
-		    // rgb=Color.HSBtoRGB((float)div/maxIter, 0.7f, (float)div/maxIter);
-		    rgb = Color.HSBtoRGB((float)div*20.0f/(float)maxIter,1.0f,1.0f);
+		    // rgb=Color
+		    //.HSBtoRGB((float)div/maxIter, 0.7f, (float)div/maxIter);
+		    rgb = Color
+			.HSBtoRGB((float)div*20.0f/(float)maxIteration,1.0f,1.0f);
 		}
 		img.setRGB(i,j,rgb);
 	    }
