@@ -9,7 +9,7 @@ import java.awt.Color;
 /**
  * This class encapsulates a Julia set
  */
-public class JuliaSet {
+public class JuliaSet implements Fractal {
 
     // escape radius and maximal number of iterations
     // of the function
@@ -66,7 +66,7 @@ public class JuliaSet {
 	private double yMax = 1;
 	private int imageHeight = 0;
 	private int imageWidth = 0;
-	private String fileName = "JuliaSet.png";
+	private String fileName = "JuliaSet";
 
 	/**
 	 * Instantiates a JuliaSetBuilder
@@ -193,9 +193,10 @@ public class JuliaSet {
     /**
      * Computes the index of divergence of the complex z0
      * @param z0 The initial complex of the iteration
-     * @return the index of divergence of z0
+     * @return The index of divergence of z0
      */
-    private int computeDivergence(Complex z0){
+    @Override
+    public int computeDivergence(Complex z0){
 	int iteration = 0;
 	Complex zn = z0;
 	while(iteration < maxIteration - 1 && zn.modulus() <= RADIUS){
@@ -208,11 +209,12 @@ public class JuliaSet {
     /**
      * Computes the index of divergence of each complex in the 
      * rectangle delimeted by xMin xMax yMin yMax of the complex plane
-     * and strores the resulting indices in a 2D array
+     * and stores the resulting indices in a 2D array
      * @return A 2D array containing the index of divergence of the
      * corresponding complex number
      */
-    private int[][] arrayDivergence(){
+    @Override
+    public int[][] getDivergenceIndexMatrix(){
     	// compute divergence for each complex points
     	int[][] arrayDivergence = new int[imageWidth][imageHeight];
     	for(int i = 0; i < imageWidth -1; i++){
@@ -227,33 +229,61 @@ public class JuliaSet {
     }
 
     /**
-     * Stores into a file of name filename a PNG image of the JuliaSet defined
-     * by this instance
+     * Returns the width of the image that contains this Fractal
+     * @return The witdh in pixels of the image
      */
-    public void drawImage(){
-	var img =
-	    new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
-	int[][] arrayDivergence = arrayDivergence();
-	for(int i = 0; i < imageWidth -1; i++){
-	    for(int j = 0; j < imageHeight -1; j++){
-		int div = arrayDivergence[i][j];
-		int rgb;
-		if(div == 999){
-		    rgb = 0;
-		} else {
-		    // rgb=Color
-		    //.HSBtoRGB((float)div/maxIter, 0.7f, (float)div/maxIter);
-		    rgb = Color
-			.HSBtoRGB((float)div*20.0f/(float)maxIteration,1.0f,1.0f);
-		}
-		img.setRGB(i,j,rgb);
-	    }
-	}
-	File file = new File(fileName + ".png");
-  	try{
-	    ImageIO.write(img, "PNG", file);
-	} catch (Exception e){
-	    e.printStackTrace();
-	}
+    @Override
+    public int getWidth(){
+	return imageWidth;
     }
+
+    /**
+     * Returns the height of the image that contains this Fractal
+     * @return The height in pixels of the image
+     */
+    @Override
+    public int getHeight(){
+	return imageHeight;
+    }
+
+    /**
+     * Returns the name of the file that contains the image of this Fractal
+     * @return The name of the file that contains the image
+     */
+    @Override
+    public String getFilename(){
+	return fileName;
+    }
+
+    // creation de l'image a separer de cette classe
+    // /**
+    //  * Stores into a file of name filename a PNG image of the JuliaSet defined
+    //  * by this instance
+    //  */
+    // public void drawImage(){
+    // 	var img =
+    // 	    new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
+    // 	int[][] arrayDivergence = getDivergenceIndexMatrix();
+    // 	for(int i = 0; i < imageWidth -1; i++){
+    // 	    for(int j = 0; j < imageHeight -1; j++){
+    // 		int div = arrayDivergence[i][j];
+    // 		int rgb;
+    // 		if(div == 999){
+    // 		    rgb = 0;
+    // 		} else {
+    // 		    // rgb=Color
+    // 		    //.HSBtoRGB((float)div/maxIter, 0.7f, (float)div/maxIter);
+    // 		    rgb = Color
+    // 			.HSBtoRGB((float)div*20.0f/(float)maxIteration,1.0f,1.0f);
+    // 		}
+    // 		img.setRGB(i,j,rgb);
+    // 	    }
+    // 	}
+    // 	File file = new File(fileName + ".png");
+    // 	try{
+    // 	    ImageIO.write(img, "PNG", file);
+    // 	} catch (Exception e){
+    // 	    e.printStackTrace();
+    // 	}
+    // }
 }
