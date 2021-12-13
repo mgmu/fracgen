@@ -1,4 +1,4 @@
-package fractales;
+package fractales.model;
 
 /**
  * This interface defines a Fractal object.
@@ -37,5 +37,13 @@ public interface Fractal {
      * Returns the name of the file that contains the image of this Fractal
      * @return The name of the file that contains the image
      */
-    String getFilename();
+    String getFileName();
+
+    /**
+     * Returns an int of RGB format that represents the color associated
+     * to the specified int divergenceIndex
+     * @param divergenceIndex A divergence index 
+     * @return The color associated to the given int divergence index
+     */
+    int getColorFromDivergenceIndex(int divergenceIndex);
 }

@@ -1,9 +1,6 @@
-package fractales;
+package fractales.model;
 
 import java.util.function.Function;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
 import java.awt.Color;
 
 /**
@@ -251,8 +248,25 @@ public class JuliaSet implements Fractal {
      * @return The name of the file that contains the image
      */
     @Override
-    public String getFilename(){
+    public String getFileName(){
 	return fileName;
+    }
+    
+    /**
+     * Returns an int of RGB format that represents the color associated
+     * to the specified int divergenceIndex
+     * @param divergenceIndex A divergence index 
+     * @return The color associated to the given int divergence index
+     */
+    public int getColorFromDivergenceIndex(int divergenceIndex){
+	// rgb=Color.HSBtoRGB((float)div/maxIter, 0.7f, (float)div/maxIter);
+	if(divergenceIndex == maxIteration - 1)
+	    return 0;
+	return Color
+	    .HSBtoRGB((float)divergenceIndex * 20.0f / (float)maxIteration,
+		      1.0f,
+		      1.0f);
+	    
     }
 
     // creation de l'image a separer de cette classe
