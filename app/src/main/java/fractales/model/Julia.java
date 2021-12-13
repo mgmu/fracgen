@@ -6,11 +6,9 @@ import java.awt.Color;
 /**
  * This class encapsulates a Julia set
  */
-public class JuliaSet implements Fractal {
+public class Julia implements Fractal {
 
-    // escape radius and maximal number of iterations
-    // of the function
-    private static final double RADIUS = 2.0;
+    // maximal number of iterations of the function
     private final int maxIteration;
 
     // working rectangle of the Complex plane
@@ -25,14 +23,14 @@ public class JuliaSet implements Fractal {
     // image height, width and name
     private final int imageHeight;
     private final int imageWidth;
-    private final String fileName = "JuliaSetTest";
+    private final String fileName;
 
     // iteration function and constant complex
     private final Function <Complex,Complex> iterationFunction; 
     private final Complex complexConstant;   
     
-    // Constructor from Julia Set builder
-    private JuliaSet(JuliaSetBuilder builder){
+    // Constructs from Julia builder
+    private Julia(Builder builder){
 	this.complexConstant = builder.complexConstant;
 	this.maxIteration = builder.maxIteration;
 	this.discreteStep = builder.discreteStep;
@@ -43,18 +41,19 @@ public class JuliaSet implements Fractal {
 	this.iterationFunction = builder.iterationFunction;
 	this.imageHeight = builder.imageHeight;
 	this.imageWidth = builder.imageWidth;
+	this.fileName = builder.fileName;
     }
     
     /**
-     * Builder class for a JuliaSet
+     * Builder for Julia class
      */
-    public static class JuliaSetBuilder {
+    public static class Builder {
 
-	//required parameters
+	// required parameters
 	private final Complex complexConstant;
 	private final Function<Complex, Complex> iterationFunction;
 	    
-	// optionnal parameters for the Julia Set
+	// optionnal parameters for Julia
 	private int maxIteration = 1000;
 	private double discreteStep = 0.00075;
 	private double xMin = -1;
@@ -63,16 +62,17 @@ public class JuliaSet implements Fractal {
 	private double yMax = 1;
 	private int imageHeight = 0;
 	private int imageWidth = 0;
-	private String fileName = "JuliaSet";
+	private String fileName = "Julia";
 
 	/**
-	 * Instantiates a JuliaSetBuilder
+	 * Instantiates a Builder
+	 *
 	 * @param complexConstant The complex constant used with the
 	 * iteration function
 	 * @param iterationFunction The function used to compute the index
 	 * of divergence
 	 */
-	public JuliaSetBuilder(Complex complexConstant,
+	public Builder(Complex complexConstant,
 			       Function<Complex, Complex> iterationFunction){
 	    this.complexConstant = complexConstant;
 	    this.iterationFunction = iterationFunction;
@@ -80,60 +80,66 @@ public class JuliaSet implements Fractal {
 
 	/**
 	 * Sets the maximum iteration value for the iteration function
+	 *
 	 * @param maxIteration The maximum iteration value
-	 * @return This JuliaSetBuilder instance
+	 * @return This Builder instance
 	 */
-	public JuliaSetBuilder maxIteration(int maxIteration){
+	public Builder maxIteration(int maxIteration){
 	    this.maxIteration = maxIteration;
 	    return this;
 	}
 
 	/**
 	 * Sets the value of the discrete step
+	 *
 	 * @param discreteStep The value of the discrete step
-	 * @return This JuliaSetBuilder instance
+	 * @return This Builder instance
 	 */
-	public JuliaSetBuilder discreteStep(double discreteStep){
+	public Builder discreteStep(double discreteStep){
 	    this.discreteStep = discreteStep;
 	    return this;
 	}
 
 	/**
 	 * Sets the value for the minimum real value of a complex number
+	 *
 	 * @param xMin The value for the minimum real value of a complex number
-	 * @return This JuliaSetBuilder instance
+	 * @return This Builder instance
 	 */
-	public JuliaSetBuilder xMin(double xMin){
+	public Builder xMin(double xMin){
 	    this.xMin = xMin;
 	    return this;
 	}
 
 	/**
 	 * Sets the value for the maximum real value of a complex number
+	 *
 	 * @param xMin The value for the maximum real value of a complex number
-	 * @return This JuliaSetBuilder instance
+	 * @return This Builder instance
 	 */
-	public JuliaSetBuilder xMax(double xMax){
+	public Builder xMax(double xMax){
 	    this.xMax = xMax;
 	    return this;
 	}
 
 	/**
 	 * Sets the value for the minimum imaginary value of a complex number
+	 *
 	 * @param xMin The value for the minimum imaginary value of a complex number
-	 * @return This JuliaSetBuilder instance
+	 * @return This Builder instance
 	 */
-	public JuliaSetBuilder yMin(double yMin){
+	public Builder yMin(double yMin){
 	    this.yMin = yMin;
 	    return this;
 	}
 
 	/**
 	 * Sets the value for the maximum imaginary value of a complex number
+	 *
 	 * @param xMin The value for the maximum imaginary value of a complex number
-	 * @return This JuliaSetBuilder instance
+	 * @return This Builder instance
 	 */
-	public JuliaSetBuilder yMax(double yMax){
+	public Builder yMax(double yMax){
 	    this.yMax = yMax;
 	    return this;
 	}
@@ -141,40 +147,44 @@ public class JuliaSet implements Fractal {
 	/**
 	 * Sets the height of the image that contains the representation of
 	 * the Julia Set
+	 *
 	 * @param imageHeight The height of the image
-	 * @return This JuliaSetBuilder instance
+	 * @return This Builder instance
 	 */
-	public JuliaSetBuilder imageHeight(int imageHeight){
+	public Builder imageHeight(int imageHeight){
 	    this.imageHeight = imageHeight;
 	    return this;
 	}
 
 	/**
-	 * Sets the width of the image that contains the representation of the
-	 * Juia Set
+	 * Sets the width of the image that contains the representation of
+	 * the Julia Set
+	 *
 	 * @param imageWidth The width of the image
-	 * @return This JuliaSetBuilder instance
+	 * @return This Builder instance
 	 */
-	public JuliaSetBuilder imageWidth(int imageWidth){
+	public Builder imageWidth(int imageWidth){
 	    this.imageWidth = imageWidth;
 	    return this;
 	}
 
 	/**
-	 * Sets the name of the file that contains the image of the Julia Set
+	 * Sets the name of the file that contains the image of the Julia set
+	 *
 	 * @param fileName The file name
-	 * @return This JuliaSetBuilder instance
+	 * @return This Builder instance
 	 */
-	public JuliaSetBuilder fileName(String fileName){
+	public Builder fileName(String fileName){
 	    this.fileName = fileName;
 	    return this;
 	}
 
 	/**
-	 * Builds a Julia Set instance from this builder
-	 * @return A new JuliaSet instance
+	 * Builds a Julia instance from this builder
+	 *
+	 * @return A new Julia instance
 	 */
-	public JuliaSet build(){
+	public Julia build(){
 	    if(imageHeight <= 0 || imageWidth <= 0){
 		// assigns each point of the discrete plane to a pixel of
 		// the image
@@ -183,20 +193,21 @@ public class JuliaSet implements Fractal {
 		imageWidth =
 		    (int) ((Math.abs(xMin)+Math.abs(xMax))/discreteStep + 1.0);
 	    }
-	    return new JuliaSet(this);
+	    return new Julia(this);
 	}
     }
 
     /**
-     * Computes the index of divergence of the complex z0
-     * @param z0 The initial complex of the iteration
-     * @return The index of divergence of z0
+     * Computes the divergence index of Complex z
+     *
+     * @param z A Complex number 
+     * @return The divergence index of z
      */
     @Override
-    public int computeDivergence(Complex z0){
+    public int computeDivergence(Complex z){
 	int iteration = 0;
-	Complex zn = z0;
-	while(iteration < maxIteration - 1 && zn.modulus() <= RADIUS){
+	Complex zn = z;
+	while(iteration < maxIteration - 1 && zn.modulus() <= Fractal.RADIUS){
 	    zn = iterationFunction.apply(zn);
 	    iteration++;
 	}
@@ -204,15 +215,15 @@ public class JuliaSet implements Fractal {
     }
 
     /**
-     * Computes the index of divergence of each complex in the 
+     * Computes the divergence index of each complex in the 
      * rectangle delimeted by xMin xMax yMin yMax of the complex plane
      * and stores the resulting indices in a 2D array
-     * @return A 2D array containing the index of divergence of the
+     *
+     * @return A 2D array containing the divergence index of the
      * corresponding complex number
      */
     @Override
     public int[][] getDivergenceIndexMatrix(){
-    	// compute divergence for each complex points
     	int[][] arrayDivergence = new int[imageWidth][imageHeight];
     	for(int i = 0; i < imageWidth -1; i++){
     	    for(int j = 0; j < imageHeight -1; j++){
@@ -227,7 +238,8 @@ public class JuliaSet implements Fractal {
 
     /**
      * Returns the width of the image that contains this Fractal
-     * @return The witdh in pixels of the image
+     *
+     * @return The width in pixels of the image
      */
     @Override
     public int getWidth(){
@@ -236,6 +248,7 @@ public class JuliaSet implements Fractal {
 
     /**
      * Returns the height of the image that contains this Fractal
+     *
      * @return The height in pixels of the image
      */
     @Override
@@ -245,6 +258,7 @@ public class JuliaSet implements Fractal {
 
     /**
      * Returns the name of the file that contains the image of this Fractal
+     *
      * @return The name of the file that contains the image
      */
     @Override
@@ -253,8 +267,9 @@ public class JuliaSet implements Fractal {
     }
     
     /**
-     * Returns an int of RGB format that represents the color associated
+     * Returns an int in RGB format that represents the color associated
      * to the specified int divergenceIndex
+     *
      * @param divergenceIndex A divergence index 
      * @return The color associated to the given int divergence index
      */
@@ -266,38 +281,5 @@ public class JuliaSet implements Fractal {
 	    .HSBtoRGB((float)divergenceIndex * 20.0f / (float)maxIteration,
 		      1.0f,
 		      1.0f);
-	    
     }
-
-    // creation de l'image a separer de cette classe
-    // /**
-    //  * Stores into a file of name filename a PNG image of the JuliaSet defined
-    //  * by this instance
-    //  */
-    // public void drawImage(){
-    // 	var img =
-    // 	    new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
-    // 	int[][] arrayDivergence = getDivergenceIndexMatrix();
-    // 	for(int i = 0; i < imageWidth -1; i++){
-    // 	    for(int j = 0; j < imageHeight -1; j++){
-    // 		int div = arrayDivergence[i][j];
-    // 		int rgb;
-    // 		if(div == 999){
-    // 		    rgb = 0;
-    // 		} else {
-    // 		    // rgb=Color
-    // 		    //.HSBtoRGB((float)div/maxIter, 0.7f, (float)div/maxIter);
-    // 		    rgb = Color
-    // 			.HSBtoRGB((float)div*20.0f/(float)maxIteration,1.0f,1.0f);
-    // 		}
-    // 		img.setRGB(i,j,rgb);
-    // 	    }
-    // 	}
-    // 	File file = new File(fileName + ".png");
-    // 	try{
-    // 	    ImageIO.write(img, "PNG", file);
-    // 	} catch (Exception e){
-    // 	    e.printStackTrace();
-    // 	}
-    // }
 }
