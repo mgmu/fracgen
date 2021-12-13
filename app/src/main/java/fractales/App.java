@@ -1,4 +1,5 @@
 package fractales;
+import fractales.model.*;
 
 import java.util.function.Function;
 import java.awt.image.BufferedImage;

@@ -1,4 +1,4 @@
-package fractales;
+package fractales.model;
 
 /**
  * This interface defines a Fractal object.

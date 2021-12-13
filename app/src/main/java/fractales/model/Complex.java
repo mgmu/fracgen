@@ -1,4 +1,4 @@
-package fractales;
+package fractales.model;
 
 /**
  * This class encapsulates a complex number.
