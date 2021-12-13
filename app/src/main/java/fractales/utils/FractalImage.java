@@ -8,11 +8,13 @@ import javax.imageio.ImageIO;
 import java.awt.Color;
 
 /**
- * This class represents the inage of a Fractal object
+ * This class represents the image of a Fractal object
+ * It creates a PNG image that contains the representation
+ * of a Fractal object
  */
 public class FractalImage {
 
-    // The fractal in the image
+    // The fractal to represent
     private Fractal fractal;
 
     // instantiates a FractalImage from a Fractal object
