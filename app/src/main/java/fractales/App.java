@@ -13,6 +13,5 @@ public class App {
 	Complex c = Complex.of(0.355534, -0.337292);
 	Function<Complex, Complex> iterFun = (zn) -> (zn.multiply(zn)).add(c);
 	JuliaSet js = new JuliaSet.JuliaSetBuilder(c, iterFun).build();
-	js.drawImage();
     }
 }
