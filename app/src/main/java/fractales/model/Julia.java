@@ -73,9 +73,16 @@ public class Julia implements Fractal {
 	 * of divergence
 	 */
 	public Builder(Complex complexConstant,
-			       Function<Complex, Complex> iterationFunction){
+		       Complex factorAlpha,
+		       Complex factorBeta){
 	    this.complexConstant = complexConstant;
-	    this.iterationFunction = iterationFunction;
+
+	    // f(z) = alpha * z^2 + beta * z + complexConstant
+	    this.iterationFunction = (z) -> {
+		return ((z.multiply(z)).multiply(factorAlpha))
+		.add(z.multiply(factorBeta))
+		.add(complexConstant);
+	    };
 	}
 
 	/**
