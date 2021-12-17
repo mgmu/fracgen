@@ -26,9 +26,15 @@ public class Julia implements Fractal {
     private final String fileName;
 
     // iteration function and constant complex
-    private final Function <Complex,Complex> iterationFunction; 
-    private final Complex complexConstant;   
-    
+    private final Function <Complex,Complex> iterationFunction;
+    private final Complex complexConstant;
+
+    // factors for the color function
+    private final float alphaColor;
+    private final float betaColor;
+    private final float gammaColor;
+
+
     // Constructs from Julia builder
     private Julia(Builder builder){
 	this.complexConstant = builder.complexConstant;
@@ -42,18 +48,17 @@ public class Julia implements Fractal {
 	this.imageHeight = builder.imageHeight;
 	this.imageWidth = builder.imageWidth;
 	this.fileName = builder.fileName;
+  this.alphaColor = builder.alphaColor;
+  this.betaColor = builder.betaColor;
+  this.gammaColor = builder.gammaColor;
     }
-    
+
     /**
      * Builder for Julia class
      */
     public static class Builder {
 
-	// required parameters
-	private final Complex complexConstant;
-	private final Function<Complex, Complex> iterationFunction;
-	    
-	// optionnal parameters for Julia
+	private Complex complexConstant = Complex.getZERO();
 	private int maxIteration = 1000;
 	private double discreteStep = 0.00075;
 	private double xMin = -1;
@@ -63,26 +68,44 @@ public class Julia implements Fractal {
 	private int imageHeight = 0;
 	private int imageWidth = 0;
 	private String fileName = "Julia";
+	private Function<Complex, Complex> iterationFunction =
+	    (z) -> {
+	    return Complex.getONE().multiply(z.multiply(z))
+	    .add(z.multiply(Complex.getZERO()))
+	    .add(complexConstant);
+	};
+  private float alphaColor = 20.0f;
+  private float betaColor = 1.0f;
+  private float gammaColor = 1.0f;
 
 	/**
-	 * Instantiates a Builder
+	 * Sets the value of the complex constant
 	 *
-	 * @param complexConstant The complex constant used with the
-	 * iteration function
-	 * @param iterationFunction The function used to compute the index
-	 * of divergence
+	 * @param complexConstant The complex constant
+	 * @return This Builder instance
 	 */
-	public Builder(Complex complexConstant,
-		       Complex factorAlpha,
-		       Complex factorBeta){
+	public Builder complexConstant(Complex complexConstant){
 	    this.complexConstant = complexConstant;
+	    return this;
+	}
 
-	    // f(z) = alpha * z^2 + beta * z + complexConstant
+	/**
+	 * Sets the iteration function expression.
+	 * The iteration function is of the form :
+	 * f(z) = alpha * z^2 + beta * z + complexConstant
+	 * where alpha and beta are Complex numbers
+	 *
+	 * @param alpha The complex factor of squared z
+	 * @param beta The complex factor of z
+	 * @return This Builder instance
+	 */
+	public Builder iterationFunction(Complex alpha, Complex beta){
 	    this.iterationFunction = (z) -> {
-		return ((z.multiply(z)).multiply(factorAlpha))
-		.add(z.multiply(factorBeta))
+		return alpha.multiply(z.multiply(z))
+		.add(beta.multiply(z))
 		.add(complexConstant);
 	    };
+	    return this;
 	}
 
 	/**
@@ -186,6 +209,20 @@ public class Julia implements Fractal {
 	    return this;
 	}
 
+  /**
+   * Sets the factors for the color function.
+   * @param  alpha               First factor.
+   * @param  beta                Second factor.
+   * @param  gamma               Third factor.
+   * @return       This builder instance
+   */
+  public Builder colorFunction(float alpha, float beta, float gamma){
+    this.alphaColor = alpha;
+    this.betaColor = beta;
+    this.gammaColor = gamma;
+    return this;
+  }
+
 	/**
 	 * Builds a Julia instance from this builder
 	 *
@@ -207,7 +244,7 @@ public class Julia implements Fractal {
     /**
      * Computes the divergence index of Complex z
      *
-     * @param z A Complex number 
+     * @param z A Complex number
      * @return The divergence index of z
      */
     @Override
@@ -222,7 +259,7 @@ public class Julia implements Fractal {
     }
 
     /**
-     * Computes the divergence index of each complex in the 
+     * Computes the divergence index of each complex in the
      * rectangle delimeted by xMin xMax yMin yMax of the complex plane
      * and stores the resulting indices in a 2D array
      *
@@ -272,21 +309,26 @@ public class Julia implements Fractal {
     public String getFileName(){
 	return fileName;
     }
-    
+
     /**
      * Returns an int in RGB format that represents the color associated
      * to the specified int divergenceIndex
      *
-     * @param divergenceIndex A divergence index 
+     * @param divergenceIndex A divergence index
      * @return The color associated to the given int divergence index
      */
+    @Override
     public int getColorFromDivergenceIndex(int divergenceIndex){
 	// rgb=Color.HSBtoRGB((float)div/maxIter, 0.7f, (float)div/maxIter);
 	if(divergenceIndex == maxIteration - 1)
 	    return 0;
-	return Color
-	    .HSBtoRGB((float)divergenceIndex * 20.0f / (float)maxIteration,
-		      1.0f,
-		      1.0f);
+  return Color
+	    .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
+		      betaColor,
+		      gammaColor);
+  // return Color
+	//     .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
+	// 	      (float)divergenceIndex * betaColor / (float)maxIteration,
+	// 	      (float)divergenceIndex * gammaColor / (float)maxIteration);
     }
 }

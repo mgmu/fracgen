@@ -99,7 +99,7 @@ public class App {
   .longOpt("colorFunction")
   .hasArg()
   .numberOfArgs(3)
-  .valueSeparator()
+  .valueSeparator(';')
   .desc("The function color")
   .build();
 
@@ -132,7 +132,6 @@ public class App {
   .desc("The iteration function")
   .build();
 
-
   public static void main(String[] args) {
     Options options = new Options();
     options.addOption(CONSOLE_OPT);
@@ -154,9 +153,9 @@ public class App {
 
     String set = "";
 
-    Julia.Builder juliaBuilder =
-      new Julia.Builder(Complex.getZERO(),Complex.getZERO(),Complex.getZERO());
+    Julia.Builder juliaBuilder = new Julia.Builder();
     Mandelbrot.Builder mandelbrotBuilder = new Mandelbrot.Builder();
+    // var builder;
 
     CommandLine commandLine;
     HelpFormatter helper = new HelpFormatter();
@@ -180,42 +179,43 @@ public class App {
         }
         else if(commandLine.hasOption("julia")) {
           set = "julia";
-          if(!commandLine.hasOption("iterFun")
-          || !commandLine.hasOption("constant")) {
-            //erreur
-            System.exit(1);
+
+          if(commandLine.hasOption("constant")){
+            //parsing constant
+            double constantReal =
+            Double.parseDouble(commandLine.getOptionValues("constant")[0]);
+            double constantIm =
+            Double.parseDouble(commandLine.getOptionValues("constant")[1]);
+
+            Complex constant = Complex.of(constantReal,constantIm);
+            juliaBuilder.complexConstant(constant);
           }
 
-          //parsing constant
-          double constantReal =
-          Double.parseDouble(commandLine.getOptionValues("constant")[0]);
-          double constantIm =
-          Double.parseDouble(commandLine.getOptionValues("constant")[1]);
+          if(commandLine.hasOption("iterFun")){
+            //parsing iterFun
+            //parsing alpha factor
+            double alphaReal =
+            Double.parseDouble(commandLine.getOptionValues("iterFun")[0]);
+            double alphaIm =
+            Double.parseDouble(commandLine.getOptionValues("iterFun")[1]);
 
-          Complex constant = Complex.of(constantReal,constantIm);
+            Complex alpha = Complex.of(alphaReal,alphaIm);
 
-          //parsing iterFun
-          //parsing alpha factor
-          double alphaReal =
-          Double.parseDouble(commandLine.getOptionValues("iterFun")[0]);
-          double alphaIm =
-          Double.parseDouble(commandLine.getOptionValues("iterFun")[1]);
+            //parsing beta factor
+            double betaReal =
+            Double.parseDouble(commandLine.getOptionValues("iterFun")[2]);
+            double betaIm =
+            Double.parseDouble(commandLine.getOptionValues("iterFun")[3]);
 
-          Complex alpha = Complex.of(alphaReal,alphaIm);
+            Complex beta = Complex.of(betaReal,betaIm);
 
-          //parsing beta factor
-          double betaReal =
-          Double.parseDouble(commandLine.getOptionValues("iterFun")[2]);
-          double betaIm =
-          Double.parseDouble(commandLine.getOptionValues("iterFun")[3]);
-
-          Complex beta = Complex.of(betaReal,betaIm);
-          juliaBuilder = new Julia.Builder(constant,alpha,beta);
+            juliaBuilder.iterationFunction(alpha,beta);
+          }
         }
         else if (commandLine.hasOption("mandelbrot")) {
           set = "mandelbrot";
-          mandelbrotBuilder = new Mandelbrot.Builder();
         }
+
 
         if(commandLine.hasOption("maxIter")) {
           int maxIter =
@@ -316,12 +316,19 @@ public class App {
 
         if(commandLine.hasOption("colorFun")) {
           double alpha =
-          Integer.parseInt(commandLine.getOptionValues("colorFun")[0]);
+          Double.parseDouble(commandLine.getOptionValues("colorFun")[0]);
           double beta =
-          Integer.parseInt(commandLine.getOptionValues("colorFun")[1]);
+          Double.parseDouble(commandLine.getOptionValues("colorFun")[1]);
           double gamma =
-          Integer.parseInt(commandLine.getOptionValues("colorFun")[2]);
+          Double.parseDouble(commandLine.getOptionValues("colorFun")[2]);
           //initialize color function
+          if(set.equals("julia")){
+            juliaBuilder.colorFunction((float)alpha, (float)beta, (float)gamma);
+          }
+          else if(set.equals("mandelbrot")){
+            mandelbrotBuilder.colorFunction((float)alpha, (float)beta, (float)gamma);
+          }
+
         }
 
         Fractal fractal = null;
