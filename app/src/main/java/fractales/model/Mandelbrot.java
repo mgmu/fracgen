@@ -3,7 +3,7 @@ package fractales.model;
 import java.awt.Color;
 
 public class Mandelbrot implements Fractal {
-    
+
     // maximal number of iterations of the function
     private final int maxIteration;
 
@@ -21,6 +21,11 @@ public class Mandelbrot implements Fractal {
     private final int imageWidth;
     private final String fileName;
 
+    // factors for the color function
+    private final float alphaColor;
+    private final float betaColor;
+    private final float gammaColor;
+
     // Constructs from Mandelbrot builder
     private Mandelbrot(Builder builder){
 	this.maxIteration = builder.maxIteration;
@@ -32,6 +37,9 @@ public class Mandelbrot implements Fractal {
 	this.imageHeight = builder.imageHeight;
 	this.imageWidth = builder.imageWidth;
 	this.fileName = builder.fileName;
+  this.alphaColor = builder.alphaColor;
+  this.betaColor = builder.betaColor;
+  this.gammaColor = builder.gammaColor;
     }
 
     /**
@@ -49,7 +57,9 @@ public class Mandelbrot implements Fractal {
 	private int imageHeight = 0;
 	private int imageWidth = 0;
 	private String fileName = "Mandelbrot";
-
+  private float alphaColor = 20.0f;
+  private float betaColor = 1.0f;
+  private float gammaColor = 1.0f;
 	/**
 	 * Sets the maximum iteration value for the iteration function
 	 *
@@ -151,6 +161,20 @@ public class Mandelbrot implements Fractal {
 	    return this;
 	}
 
+  /**
+   * Sets the factors for the color function.
+   * @param  alpha               First factor.
+   * @param  beta                Second factor.
+   * @param  gamma               Third factor.
+   * @return       This builder instance
+   */
+  public Builder colorFunction(float alpha, float beta, float gamma){
+    this.alphaColor = alpha;
+    this.betaColor = beta;
+    this.gammaColor = gamma;
+    return this;
+  }
+
 	/**
 	 * Builds a Mandelbrot instance from this builder
 	 *
@@ -171,7 +195,7 @@ public class Mandelbrot implements Fractal {
     }
 
     /**
-     * Computes the divergence index of each complex in the 
+     * Computes the divergence index of each complex in the
      * rectangle delimeted by xMin xMax yMin yMax of the complex plane
      * and stores the resulting indices in a 2D array
      *
@@ -239,7 +263,7 @@ public class Mandelbrot implements Fractal {
      * Returns an int in RGB format that represents the color associated
      * to the specified int divergenceIndex
      *
-     * @param divergenceIndex A divergence index 
+     * @param divergenceIndex A divergence index
      * @return The color associated to the given int divergence index
      */
     public int getColorFromDivergenceIndex(int divergenceIndex){
@@ -247,8 +271,12 @@ public class Mandelbrot implements Fractal {
 	if(divergenceIndex == maxIteration - 1)
 	    return 0;
 	return Color
-	    .HSBtoRGB((float)divergenceIndex * 20.0f / (float)maxIteration,
-		      1.0f,
-		      1.0f);
+	    .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
+		      betaColor,
+		      gammaColor);
+  // return Color
+	//     .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
+	// 	      (float)divergenceIndex * betaColor / (float)maxIteration,
+	// 	      (float)divergenceIndex * gammaColor / (float)maxIteration);
     }
 }
