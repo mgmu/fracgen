@@ -50,6 +50,42 @@ public interface Fractal {
     String getFileName();
 
     /**
+     * Returns the value of the discrete step used for the generation
+     * of the complex plane
+     *
+     * @return The discrete step value
+     */
+    double getDiscreteStep();
+
+    /**
+     * Returns the minimal value along the x-axis
+     *
+     * @return the minimal value along the x-axis
+     */
+    double getXMin();
+
+    /**
+     * Returns the maximal value along the x-axis
+     *
+     * @return the maximal value along the x-axis
+     */
+    double getXMax();
+
+    /**
+     * Returns the minimal value along the y-axis
+     *
+     * @return the minimal value along the y-axis
+     */
+    double getYMin();
+        
+    /**
+     * Returns the maximal value along the y-axis
+     *
+     * @return the maximal value along the y-axis
+     */
+    double getYMax();
+
+    /**
      * Returns an int of RGB format that represents the color associated
      * to the specified int divergenceIndex
      *

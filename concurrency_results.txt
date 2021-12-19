@@ -1,0 +1,11 @@
+Not using parallel threads :
+    Julia : 60s
+    Mandelbrot : 20s
+
+Using Executors Framework :
+      Same results, an executor per pixel is too much
+
+Using ForkJoinPool Framework :
+      Invoked with default parallelism degree
+      Julia : 21s
+      Mandelbrot : 11s
