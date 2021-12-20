@@ -48,9 +48,9 @@ public class Julia implements Fractal {
 	this.imageHeight = builder.imageHeight;
 	this.imageWidth = builder.imageWidth;
 	this.fileName = builder.fileName;
-  this.alphaColor = builder.alphaColor;
-  this.betaColor = builder.betaColor;
-  this.gammaColor = builder.gammaColor;
+	this.alphaColor = builder.alphaColor;
+	this.betaColor = builder.betaColor;
+	this.gammaColor = builder.gammaColor;
     }
 
     /**
@@ -74,9 +74,9 @@ public class Julia implements Fractal {
 	    .add(z.multiply(Complex.getZERO()))
 	    .add(complexConstant);
 	};
-  private float alphaColor = 20.0f;
-  private float betaColor = 1.0f;
-  private float gammaColor = 1.0f;
+	private float alphaColor = 20.0f;
+	private float betaColor = 1.0f;
+	private float gammaColor = 1.0f;
 
 	/**
 	 * Sets the value of the complex constant
@@ -91,7 +91,7 @@ public class Julia implements Fractal {
 
 	/**
 	 * Sets the iteration function expression.
-	 * The iteration function is of the form :
+	 * The iteration function is of the form : 
 	 * f(z) = alpha * z^2 + beta * z + complexConstant
 	 * where alpha and beta are Complex numbers
 	 *
@@ -107,7 +107,7 @@ public class Julia implements Fractal {
 	    };
 	    return this;
 	}
-
+	
 	/**
 	 * Sets the maximum iteration value for the iteration function
 	 *
@@ -209,19 +209,19 @@ public class Julia implements Fractal {
 	    return this;
 	}
 
-  /**
-   * Sets the factors for the color function.
-   * @param  alpha               First factor.
-   * @param  beta                Second factor.
-   * @param  gamma               Third factor.
-   * @return       This builder instance
-   */
-  public Builder colorFunction(float alpha, float beta, float gamma){
-    this.alphaColor = alpha;
-    this.betaColor = beta;
-    this.gammaColor = gamma;
-    return this;
-  }
+	/**
+	 * Sets the factors for the color function.
+	 * @param  alpha               First factor.
+	 * @param  beta                Second factor.
+	 * @param  gamma               Third factor.
+	 * @return       This builder instance
+	 */
+	public Builder colorFunction(float alpha, float beta, float gamma){
+	    this.alphaColor = alpha;
+	    this.betaColor = beta;
+	    this.gammaColor = gamma;
+	    return this;
+	}
 
 	/**
 	 * Builds a Julia instance from this builder
@@ -300,7 +300,7 @@ public class Julia implements Fractal {
 	return imageHeight;
     }
 
-    /**
+   /**
      * Returns the name of the file that contains the image of this Fractal
      *
      * @return The name of the file that contains the image
@@ -322,11 +322,11 @@ public class Julia implements Fractal {
 	// rgb=Color.HSBtoRGB((float)div/maxIter, 0.7f, (float)div/maxIter);
 	if(divergenceIndex == maxIteration - 1)
 	    return 0;
-  return Color
+	return Color
 	    .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
 		      betaColor,
 		      gammaColor);
-  // return Color
+	// return Color
 	//     .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
 	// 	      (float)divergenceIndex * betaColor / (float)maxIteration,
 	// 	      (float)divergenceIndex * gammaColor / (float)maxIteration);
