@@ -370,7 +370,11 @@ public class App extends Application {
 		    fractal = mandelbrotBuilder.build();
 		}
 		FractalImage fi = FractalImage.of(fractal);
+		System.out.println("Saving...");
 		fi.saveFile();
+		System.out.println("Saved at " + fi.getPath());
+		System.out.println("Exiting");
+		System.exit(0);
 	    }
 	    else if(commandLine.hasOption("gui")){
 		launch(args);
@@ -381,7 +385,7 @@ public class App extends Application {
 	catch(Exception e){
 	    System.out.println(e.getMessage());
 	    helper.printHelp(" ", options);
-	    System.exit(0);
+	    System.exit(-1);
 	}
     }
 }

@@ -43,6 +43,7 @@ public class FractalImage {
     public BufferedImage createImage(){
 	int w = fractal.getWidth();
 	int h = fractal.getHeight();
+	System.out.println("w = " + w + " h = " + h);
 	var img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 
 	int[][] divMatrix = fractal.getDivergenceIndexMatrix();
@@ -67,7 +68,6 @@ public class FractalImage {
 	File file =
 	    new File("/tmp/" + fractal.getFileName() + ".png");
 	path = file.getAbsolutePath();
-	System.out.println("PATH OF SAVED IMAGE : " + path);
 	try {
 	    ImageIO.write(createImage(), "PNG", file);
 	} catch (Exception e){

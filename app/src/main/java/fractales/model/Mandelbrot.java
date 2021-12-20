@@ -1,6 +1,8 @@
 package fractales.model;
 
 import java.awt.Color;
+import java.util.concurrent.*;
+import fractales.utils.DivergenceIndexMatrixCalculator;
 
 public class Mandelbrot implements Fractal {
 
@@ -37,9 +39,9 @@ public class Mandelbrot implements Fractal {
 	this.imageHeight = builder.imageHeight;
 	this.imageWidth = builder.imageWidth;
 	this.fileName = builder.fileName;
-  this.alphaColor = builder.alphaColor;
-  this.betaColor = builder.betaColor;
-  this.gammaColor = builder.gammaColor;
+	this.alphaColor = builder.alphaColor;
+	this.betaColor = builder.betaColor;
+	this.gammaColor = builder.gammaColor;
     }
 
     /**
@@ -57,9 +59,10 @@ public class Mandelbrot implements Fractal {
 	private int imageHeight = 0;
 	private int imageWidth = 0;
 	private String fileName = "Mandelbrot";
-  private float alphaColor = 20.0f;
-  private float betaColor = 1.0f;
-  private float gammaColor = 1.0f;
+	private float alphaColor = 20.0f;
+	private float betaColor = 1.0f;
+	private float gammaColor = 1.0f;
+	
 	/**
 	 * Sets the maximum iteration value for the iteration function
 	 *
@@ -161,20 +164,21 @@ public class Mandelbrot implements Fractal {
 	    return this;
 	}
 
-  /**
-   * Sets the factors for the color function.
-   * @param  alpha               First factor.
-   * @param  beta                Second factor.
-   * @param  gamma               Third factor.
-   * @return       This builder instance
-   */
-  public Builder colorFunction(float alpha, float beta, float gamma){
-    this.alphaColor = alpha;
-    this.betaColor = beta;
-    this.gammaColor = gamma;
-    return this;
-  }
-
+	/**
+	 * Sets the factors for the color function.
+	 *
+	 * @param alpha First factor.
+	 * @param beta Second factor.
+	 * @param gamma Third factor.
+	 * @return This Builder instance
+	 */
+	public Builder colorFunction(float alpha, float beta, float gamma){
+	    this.alphaColor = alpha;
+	    this.betaColor = beta;
+	    this.gammaColor = gamma;
+	    return this;
+	}
+	
 	/**
 	 * Builds a Mandelbrot instance from this builder
 	 *
@@ -203,15 +207,12 @@ public class Mandelbrot implements Fractal {
      * corresponding complex number
      */
     public int[][] getDivergenceIndexMatrix(){
-    	int[][] arrayDivergence = new int[imageWidth][imageHeight];
-    	for(int i = 0; i < imageWidth -1; i++){
-    	    for(int j = 0; j < imageHeight -1; j++){
-		Complex complex =
-		    Complex.of(xMin + (discreteStep * i),
-			       yMax - (discreteStep * j));
-		arrayDivergence[i][j] = computeDivergence(complex);
-	    }
-    	}
+	int[][] arrayDivergence = new int[imageWidth][imageHeight];
+	DivergenceIndexMatrixCalculator work =
+	    new DivergenceIndexMatrixCalculator(0, this.getWidth() -1,
+						arrayDivergence, this);
+	ForkJoinPool pool = new ForkJoinPool();
+	pool.invoke(work);
 	return arrayDivergence;
     }
 
@@ -278,5 +279,30 @@ public class Mandelbrot implements Fractal {
 	//     .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
 	// 	      (float)divergenceIndex * betaColor / (float)maxIteration,
 	// 	      (float)divergenceIndex * gammaColor / (float)maxIteration);
+    }
+
+    @Override
+    public double getDiscreteStep(){
+	return this.discreteStep;
+    }
+
+    @Override
+    public double getXMin(){
+	return this.xMin;
+    }
+
+    @Override
+    public double getXMax(){
+	return this.xMax;
+    }
+
+    @Override
+    public double getYMin(){
+	return this.yMin;
+    }
+
+    @Override
+    public double getYMax(){
+	return this.yMax;
     }
 }

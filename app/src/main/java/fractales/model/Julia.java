@@ -2,6 +2,8 @@ package fractales.model;
 
 import java.util.function.Function;
 import java.awt.Color;
+import java.util.concurrent.*;
+import fractales.utils.DivergenceIndexMatrixCalculator;
 
 /**
  * This class encapsulates a Julia set
@@ -211,10 +213,10 @@ public class Julia implements Fractal {
 
 	/**
 	 * Sets the factors for the color function.
-	 * @param  alpha               First factor.
-	 * @param  beta                Second factor.
-	 * @param  gamma               Third factor.
-	 * @return       This builder instance
+	 * @param alpha First factor
+	 * @param beta Second factor
+	 * @param gamma Third factor
+	 * @return This Builder instance
 	 */
 	public Builder colorFunction(float alpha, float beta, float gamma){
 	    this.alphaColor = alpha;
@@ -269,14 +271,11 @@ public class Julia implements Fractal {
     @Override
     public int[][] getDivergenceIndexMatrix(){
     	int[][] arrayDivergence = new int[imageWidth][imageHeight];
-    	for(int i = 0; i < imageWidth -1; i++){
-    	    for(int j = 0; j < imageHeight -1; j++){
-		Complex complex =
-		    Complex.of(xMin + (discreteStep * i),
-			       yMax - (discreteStep * j));
-		arrayDivergence[i][j] = computeDivergence(complex);
-	    }
-    	}
+	DivergenceIndexMatrixCalculator work =
+	    new DivergenceIndexMatrixCalculator(0, this.getWidth() - 1,
+						arrayDivergence, this);
+	ForkJoinPool pool = new ForkJoinPool();
+	pool.invoke(work);
 	return arrayDivergence;
     }
 
@@ -330,5 +329,30 @@ public class Julia implements Fractal {
 	//     .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
 	// 	      (float)divergenceIndex * betaColor / (float)maxIteration,
 	// 	      (float)divergenceIndex * gammaColor / (float)maxIteration);
+    }
+
+    @Override
+    public double getDiscreteStep(){
+	return this.discreteStep;
+    }
+
+    @Override
+    public double getXMin(){
+	return this.xMin;
+    }
+
+    @Override
+    public double getXMax(){
+	return this.xMax;
+    }
+
+    @Override
+    public double getYMin(){
+	return this.yMin;
+    }
+
+    @Override
+    public double getYMax(){
+	return this.yMax;
     }
 }
