@@ -15,13 +15,6 @@ import org.apache.commons.cli.*;
 
 public class App extends Application {
 
-    // console and gui options
-    private static final Option CONSOLE_OPT =
-	Option.builder("csl")
-	.longOpt("console")
-	.desc("Launches application in console mode")
-	.build();
-
     private static final Option GUI_OPT =
 	Option.builder("gui")
 	.longOpt("graphics")
@@ -153,7 +146,6 @@ public class App extends Application {
 
 	// add all options to implemented options list
 	Options options = new Options();
-	options.addOption(CONSOLE_OPT);
 	options.addOption(GUI_OPT);
 	options.addOption(MAX_ITER_OPT);
 	options.addOption(STEP_OPT);
@@ -183,22 +175,24 @@ public class App extends Application {
 	    //parsing the commandline
 	    commandLine = parser.parse(options, args);
 
-	    if(commandLine.hasOption("csl") && commandLine.hasOption("gui")){
-		//erreur
-		helper.printHelp(" ", options);
-    		System.exit(0);
-	    }
-	    else if(commandLine.hasOption("csl")){
-		//launching console version
+	    // if -gui or --graphics is present, launch gui version
+	    if(commandLine.hasOption("gui")){
+		launch(args);
+	    } else { // launches console version
+
+		// can only generate one fractal
 		if(commandLine.hasOption("julia")
 		   && commandLine.hasOption("mandelbrot")){
 		    helper.printHelp(" ", options);
 		    System.exit(0);
 		}
-		else if(commandLine.hasOption("julia")){
+
+		// user wants Julia fractal
+		if(commandLine.hasOption("julia")){
 		    set = "julia";
 
 		    if(commandLine.hasOption("constant")){
+			
 			//parsing constant
 			double constantReal =
 			    Double.parseDouble(commandLine
@@ -212,6 +206,7 @@ public class App extends Application {
 		    }
 
 		    if(commandLine.hasOption("iterFun")){
+			
 			//parsing iterFun
 			//parsing alpha factor
 			double alphaReal =
@@ -235,111 +230,110 @@ public class App extends Application {
 
 			juliaBuilder.iterationFunction(alpha,beta);
 		    }
-		}
-		else if (commandLine.hasOption("mandelbrot")){
+		} else if (commandLine.hasOption("mandelbrot")){
 		    set = "mandelbrot";
 		}
 
-
+		// parse iteration input
 		if(commandLine.hasOption("maxIter")){
 		    int maxIter =
 			Integer.parseInt(commandLine.getOptionValue("maxIter"));
 		    if(set.equals("julia")){
 			juliaBuilder.maxIteration(maxIter);
-		    }
-		    else if(set.equals("mandelbrot")){
+		    } else if(set.equals("mandelbrot")){
 			mandelbrotBuilder.maxIteration(maxIter);
 		    }
 		}
 
+		// parse step input
 		if(commandLine.hasOption("step")){
 		    double step =
 			Double.parseDouble(commandLine.getOptionValue("step"));
 		    if(set.equals("julia")){
 			juliaBuilder.discreteStep(step);
-		    }
-		    else if(set.equals("mandelbrot")){
+		    } else if(set.equals("mandelbrot")){
 			mandelbrotBuilder.discreteStep(step);
 		    }
 		}
 
+		// parse xMin input
 		if(commandLine.hasOption("xMin")){
 		    int xMin =
 			Integer.parseInt(commandLine.getOptionValue("xMin"));
 		    if(set.equals("julia")){
 			juliaBuilder.xMin(xMin);
-		    }
-		    else if(set.equals("mandelbrot")){
+		    } else if(set.equals("mandelbrot")){
 			mandelbrotBuilder.xMin(xMin);
 		    }
 		}
 
+		// parse xMax input
 		if(commandLine.hasOption("xMax")){
 		    int xMax =
 			Integer.parseInt(commandLine.getOptionValue("xMax"));
 		    if(set.equals("julia")){
 			juliaBuilder.xMax(xMax);
-		    }
-		    else if(set.equals("mandelbrot")){
+		    } else if(set.equals("mandelbrot")){
 			mandelbrotBuilder.xMax(xMax);
 		    }
 		}
 
+		// parse yMin input
 		if(commandLine.hasOption("yMin")){
 		    int yMin =
 			Integer.parseInt(commandLine.getOptionValue("yMin"));
 		    if(set.equals("julia")){
 			juliaBuilder.yMin(yMin);
-		    }
-		    else if(set.equals("mandelbrot")){
+		    } else if(set.equals("mandelbrot")){
 			mandelbrotBuilder.yMin(yMin);
 		    }
 		}
 
+		// parse yMax input
 		if(commandLine.hasOption("yMax")){
 		    int yMax =
 			Integer.parseInt(commandLine.getOptionValue("yMax"));
 		    if(set.equals("julia")){
 			juliaBuilder.yMax(yMax);
-		    }
-		    else if(set.equals("mandelbrot")){
+		    } else if(set.equals("mandelbrot")){
 			mandelbrotBuilder.yMax(yMax);
 		    }
 		}
 
+		// parse height input
 		if(commandLine.hasOption("h")){
 		    int imageHeight =
 			Integer.parseInt(commandLine.getOptionValue("h"));
 		    if(set.equals("julia")){
 			juliaBuilder.imageHeight(imageHeight);
-		    }
-		    else if(set.equals("mandelbrot")){
+		    } else if(set.equals("mandelbrot")){
 			mandelbrotBuilder.imageHeight(imageHeight);
 		    }
 		}
 
+		// parse width input
 		if(commandLine.hasOption("w")){
 		    int imageWidth =
 			Integer.parseInt(commandLine.getOptionValue("w"));
 		    if(set.equals("julia")){
 			juliaBuilder.imageWidth(imageWidth);
-		    }
-		    else if(set.equals("mandelbrot")){
+		    } else if(set.equals("mandelbrot")){
 			mandelbrotBuilder.imageWidth(imageWidth);
 		    }
 		}
 
+		// parse filename input
 		if(commandLine.hasOption("name")){
 		    if(set.equals("julia")){
 			juliaBuilder.fileName(commandLine
 					      .getOptionValue("name"));
-		    }
-		    else if(set.equals("mandelbrot")){
+		    } else if(set.equals("mandelbrot")){
 			mandelbrotBuilder.fileName(commandLine
 						   .getOptionValue("name"));
 		    }
 		}
 
+		// parse color function input
 		if(commandLine.hasOption("colorFun")){
 		    double alpha =
 			Double.parseDouble(commandLine
@@ -354,8 +348,7 @@ public class App extends Application {
 		    if(set.equals("julia")){
 			juliaBuilder.colorFunction((float)alpha, (float)beta,
 						   (float)gamma);
-		    }
-		    else if(set.equals("mandelbrot")){
+		    } else if(set.equals("mandelbrot")){
 			mandelbrotBuilder
 			    .colorFunction((float)alpha, (float)beta,
 					   (float)gamma);
@@ -365,10 +358,10 @@ public class App extends Application {
 		Fractal fractal = null;
 		if(set.equals("julia")){
 		    fractal = juliaBuilder.build();
-		}
-		else if(set.equals("mandelbrot")){
+		} else if(set.equals("mandelbrot")){
 		    fractal = mandelbrotBuilder.build();
 		}
+		
 		FractalImage fi = FractalImage.of(fractal);
 		System.out.println("Saving...");
 		fi.saveFile();
@@ -376,13 +369,7 @@ public class App extends Application {
 		System.out.println("Exiting");
 		System.exit(0);
 	    }
-	    else if(commandLine.hasOption("gui")){
-		launch(args);
-	    } else {
-		System.out.println("Choose between console or gui");
-	    }
-	}
-	catch(Exception e){
+	} catch(Exception e){
 	    System.out.println(e.getMessage());
 	    helper.printHelp(" ", options);
 	    System.exit(-1);

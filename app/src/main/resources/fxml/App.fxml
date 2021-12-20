@@ -5,6 +5,7 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -26,25 +27,64 @@
                   <Label layoutX="29.0" layoutY="341.0" text="α :" />
                   <Label layoutX="29.0" layoutY="375.0" text="β :" />
                   <Label layoutX="29.0" layoutY="411.0" text="Complex constant &quot;C&quot; :" />
-                  <TextField fx:id="maxIterationInput" layoutX="202.0" layoutY="126.0" promptText="1000 by default" />
-                  <TextField layoutX="201.0" layoutY="158.0" promptText="double value" fx:id="xMinInput" />
-                  <TextField layoutX="201.0" layoutY="184.0" promptText="double value" fx:id="xMaxInput" />
-                  <TextField fx:id="yMinInput" layoutX="201.0" layoutY="208.0" promptText="double value" />
-                  <TextField fx:id="yMaxInput" layoutX="201.0" layoutY="234.0" promptText="double value" />
-                  <TextField fx:id="alphaRealPartInput" layoutX="206.0" layoutY="336.0" prefHeight="24.0" prefWidth="152.0" promptText="Real part" />
-                  <TextField fx:id="betaRealPartInput" layoutX="206.0" layoutY="370.0" prefHeight="24.0" prefWidth="152.0" promptText="Real part" />
-                  <TextField fx:id="alphaImPartInput" layoutX="384.0" layoutY="336.0" prefHeight="24.0" prefWidth="152.0" promptText="Imaginary part" />
-                  <TextField fx:id="betaImPartInput" layoutX="383.0" layoutY="370.0" prefHeight="24.0" prefWidth="152.0" promptText="Imaginary part" />
+                  <TextField fx:id="maxIterationInput" layoutX="202.0" layoutY="126.0" promptText="1000 by default">
+                     <tooltip>
+                        <Tooltip text="Provide integer value" />
+                     </tooltip></TextField>
+                  <TextField layoutX="201.0" layoutY="158.0" promptText="ex: -3.65" fx:id="xMinInput">
+                     <tooltip>
+                        <Tooltip text="Provide double value" />
+                     </tooltip></TextField>
+                  <TextField layoutX="201.0" layoutY="184.0" promptText="ex: 4.56" fx:id="xMaxInput">
+                     <tooltip>
+                        <Tooltip text="Provide double value" />
+                     </tooltip></TextField>
+                  <TextField fx:id="yMinInput" layoutX="201.0" layoutY="208.0" promptText="-1.5">
+                     <tooltip>
+                        <Tooltip text="Provide double value" />
+                     </tooltip></TextField>
+                  <TextField fx:id="yMaxInput" layoutX="201.0" layoutY="234.0" promptText="ex: 5">
+                     <tooltip>
+                        <Tooltip text="Provide double value" />
+                     </tooltip></TextField>
+                  <TextField fx:id="alphaRealPartInput" layoutX="206.0" layoutY="336.0" prefHeight="24.0" prefWidth="152.0" promptText="Real part">
+                     <tooltip>
+                        <Tooltip text="Provide double value" />
+                     </tooltip></TextField>
+                  <TextField fx:id="betaRealPartInput" layoutX="206.0" layoutY="370.0" prefHeight="24.0" prefWidth="152.0" promptText="Real part">
+                     <tooltip>
+                        <Tooltip text="Provide double value" />
+                     </tooltip></TextField>
+                  <TextField fx:id="alphaImPartInput" layoutX="384.0" layoutY="336.0" prefHeight="24.0" prefWidth="152.0" promptText="Imaginary part">
+                     <tooltip>
+                        <Tooltip text="Provide double value" />
+                     </tooltip></TextField>
+                  <TextField fx:id="betaImPartInput" layoutX="383.0" layoutY="370.0" prefHeight="24.0" prefWidth="152.0" promptText="Imaginary part">
+                     <tooltip>
+                        <Tooltip text="Provide double value" />
+                     </tooltip></TextField>
                   <Label layoutX="31.0" layoutY="454.0" text="File name : " />
-                  <TextField fx:id="filenameInput" layoutX="207.0" layoutY="450.0" promptText="Filename" />
+                  <TextField fx:id="filenameInput" layoutX="207.0" layoutY="450.0" promptText="Filename">
+                     <tooltip>
+                        <Tooltip text="Provide only the name (without .png extension), as images are saved in /tmp" />
+                     </tooltip></TextField>
                   <Label fx:id="fractalSelected" layoutX="309.0" layoutY="82.0" text="Label" />
                   <Button fx:id="buildButton" layoutX="64.0" layoutY="657.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="107.0" text="BUILD" />
                   <Label layoutX="34.0" layoutY="501.0" text="Step : " />
-                  <TextField fx:id="discreteStepInput" layoutX="207.0" layoutY="497.0" promptText="0.00075 by default" />
+                  <TextField fx:id="discreteStepInput" layoutX="207.0" layoutY="497.0" promptText="0.00075 by default">
+                     <tooltip>
+                        <Tooltip text="Provide double value. WARNING : values under 0.00075 might crush the application as they are more likely to overlap heap space. Increase heap space allocated to JVM on execution" />
+                     </tooltip></TextField>
                   <Label layoutX="30.0" layoutY="549.0" text="Image width : " />
                   <Label layoutX="30.0" layoutY="585.0" text="Image height : " />
-                  <TextField fx:id="imageWidthInput" layoutX="207.0" layoutY="545.0" promptText="scaled to step by default" />
-                  <TextField fx:id="imageHeightInput" layoutX="207.0" layoutY="581.0" promptText="scaled to step by default" />
+                  <TextField fx:id="imageWidthInput" layoutX="207.0" layoutY="545.0" promptText="scaled to step by default">
+                     <tooltip>
+                        <Tooltip text="Provide integer value" />
+                     </tooltip></TextField>
+                  <TextField fx:id="imageHeightInput" layoutX="207.0" layoutY="581.0" promptText="scaled to step by default">
+                     <tooltip>
+                        <Tooltip text="Provide integer value" />
+                     </tooltip></TextField>
                   <Label layoutX="365.0" layoutY="340.0" text="+" />
                   <Label layoutX="365.0" layoutY="374.0" text="+" />
                   <Label layoutX="540.0" layoutY="338.0" text="i">
@@ -57,8 +97,14 @@
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="cstRealPartInput" layoutX="206.0" layoutY="407.0" prefHeight="24.0" prefWidth="152.0" promptText="Real part" />
-                  <TextField fx:id="cstImPartInput" layoutX="384.0" layoutY="407.0" prefHeight="24.0" prefWidth="152.0" promptText="Imaginary part" />
+                  <TextField fx:id="cstRealPartInput" layoutX="206.0" layoutY="407.0" prefHeight="24.0" prefWidth="152.0" promptText="Real part">
+                     <tooltip>
+                        <Tooltip text="Provide double value" />
+                     </tooltip></TextField>
+                  <TextField fx:id="cstImPartInput" layoutX="384.0" layoutY="407.0" prefHeight="24.0" prefWidth="152.0" promptText="Imaginary part">
+                     <tooltip>
+                        <Tooltip text="Provide double value" />
+                     </tooltip></TextField>
                   <Label layoutX="365.0" layoutY="411.0" text="+" />
                   <Label layoutX="540.0" layoutY="409.0" text="i">
                      <font>
