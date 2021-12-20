@@ -93,7 +93,7 @@ public class Julia implements Fractal {
 
 	/**
 	 * Sets the iteration function expression.
-	 * The iteration function is of the form :
+	 * The iteration function is of the form : 
 	 * f(z) = alpha * z^2 + beta * z + complexConstant
 	 * where alpha and beta are Complex numbers
 	 *
@@ -109,7 +109,7 @@ public class Julia implements Fractal {
 	    };
 	    return this;
 	}
-
+	
 	/**
 	 * Sets the maximum iteration value for the iteration function
 	 *
@@ -299,7 +299,7 @@ public class Julia implements Fractal {
 	return imageHeight;
     }
 
-    /**
+   /**
      * Returns the name of the file that contains the image of this Fractal
      *
      * @return The name of the file that contains the image
@@ -325,7 +325,7 @@ public class Julia implements Fractal {
 	    .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
 		      betaColor,
 		      gammaColor);
-  // return Color
+	// return Color
 	//     .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
 	// 	      (float)divergenceIndex * betaColor / (float)maxIteration,
 	// 	      (float)divergenceIndex * gammaColor / (float)maxIteration);

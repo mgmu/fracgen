@@ -17,6 +17,9 @@ public class FractalImage {
     // The fractal to represent
     private Fractal fractal;
 
+    // path to the file
+    private String path;
+
     // instantiates a FractalImage from a Fractal object
     private FractalImage(Fractal fractal){
 	this.fractal = fractal;
@@ -32,15 +35,19 @@ public class FractalImage {
 	return new FractalImage(fractal);
     }
 
-    // Creates a BufferedImage that represents the fractal of this instance
-    private BufferedImage createImage(){
+    /**
+     * Returns a BufferedImage containing the representation of the fractal
+     *
+     * @return A BufferedImage containing the representation of the fractal
+     */
+    public BufferedImage createImage(){
 	int w = fractal.getWidth();
 	int h = fractal.getHeight();
 	var img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-	
+
 	int[][] divMatrix = fractal.getDivergenceIndexMatrix();
 	int rgb = 0;
-	
+
 	for(int i = 0; i < w - 1; i++){
 	    for(int j = 0; j < h - 1; j++){
 		rgb = fractal.getColorFromDivergenceIndex(divMatrix[i][j]);
@@ -55,13 +62,26 @@ public class FractalImage {
      * which name is the return value of the function getFileName() on the
      * fractal, with .png concatenated
      */
+
     public void saveFile(){
-	File file = new File(fractal.getFileName() + ".png");
+	File file =
+	    new File("/tmp/" + fractal.getFileName() + ".png");
+	path = file.getAbsolutePath();
+	System.out.println("PATH OF SAVED IMAGE : " + path);
 	try {
 	    ImageIO.write(createImage(), "PNG", file);
 	} catch (Exception e){
 	    e.printStackTrace();
 	    System.exit(-1);
 	}
+    }
+
+    /**
+     * Returns the path to the image
+     *
+     * @return The path to the image
+     */
+    public String getPath(){
+	return path;
     }
 }
