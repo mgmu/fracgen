@@ -109,138 +109,141 @@ public class Controller {
 	return input.getLength() > 0;
     }
 
+    // displays an error alert with the specified parameters
+    private void showErrorAlert(){
+	Alert alert = new Alert(Alert.AlertType.ERROR);
+	alert.setContentText("You have provided invalid input.\n"
+			     + "Please provide valid input");
+	alert.showAndWait();
+    }
+
     // builds the fractal Julia
     private Julia buildJuliaFractal(){
 	Julia.Builder builder = new Julia.Builder();
 
-	try{
-
-	    // read the complex constant if given
-	    if(isInputGiven(cstRealPartInput) && isInputGiven(cstImPartInput)){
-		double a = readDoubleInput(cstRealPartInput);
-		double b = readDoubleInput(cstImPartInput);
-		builder = builder.complexConstant(Complex.of(a,b));
-	    }
-
-	    // read the iteration function factors if given
-	    if(isInputGiven(alphaRealPartInput)
-	       && isInputGiven(alphaImPartInput)
-	       && isInputGiven(betaRealPartInput)
-	       && isInputGiven(betaImPartInput)){
-		double ar = readDoubleInput(alphaRealPartInput);
-		double ai = readDoubleInput(alphaImPartInput);
-		double br = readDoubleInput(betaRealPartInput);
-		double bi = readDoubleInput(betaImPartInput);
-
-		builder = builder
-		    .iterationFunction(Complex.of(ar, ai), Complex.of(br, bi));
-	    }
-
-	    // read iteration if given
-	    if(isInputGiven(maxIterationInput)){
-		int i = readIntInput(maxIterationInput);
-		builder = builder.maxIteration(i);
-	    }
-
-	    // read step if given
-	    if(isInputGiven(discreteStepInput)){
-		double s = readDoubleInput(discreteStepInput);
-		builder = builder.discreteStep(s);
-	    }
-
-	    // read complex rectangle if given
-	    if(isInputGiven(xMinInput)
-	       && isInputGiven(xMaxInput)
-	       && isInputGiven(yMinInput)
-	       && isInputGiven(yMaxInput)){
-		double xMin = readDoubleInput(xMinInput);
-		double xMax = readDoubleInput(xMaxInput);
-		double yMin = readDoubleInput(yMinInput);
-		double yMax = readDoubleInput(yMaxInput);
-		builder = builder.xMin(xMin).xMax(xMax).yMin(yMin).yMax(yMax);
-	    }
-
-	    // read image dimensions if given
-	    if(isInputGiven(imageWidthInput) && isInputGiven(imageHeightInput)){
-		int w = readIntInput(imageWidthInput);
-		int h = readIntInput(imageHeightInput);
-		builder = builder.imageWidth(w).imageHeight(h);
-	    }
-
-	    // read filename
-	    if(isInputGiven(filenameInput)){
-		String n = filenameInput.getText();
-		builder = builder.fileName(n);
-	    }
-
-	    return builder.build();
-
-	} catch(IllegalArgumentException iae){
-	    // show alert box
+	// read the complex constant if given
+	if(isInputGiven(cstRealPartInput) && isInputGiven(cstImPartInput)){
+	    double a = readDoubleInput(cstRealPartInput);
+	    double b = readDoubleInput(cstImPartInput);
+	    builder = builder.complexConstant(Complex.of(a,b));
 	}
-
-	return null;
+	
+	// read the iteration function factors if given
+	if(isInputGiven(alphaRealPartInput)
+	   && isInputGiven(alphaImPartInput)
+	   && isInputGiven(betaRealPartInput)
+	   && isInputGiven(betaImPartInput)){
+	    double ar = readDoubleInput(alphaRealPartInput);
+	    double ai = readDoubleInput(alphaImPartInput);
+	    double br = readDoubleInput(betaRealPartInput);
+	    double bi = readDoubleInput(betaImPartInput);
+	    
+	    builder = builder
+		.iterationFunction(Complex.of(ar, ai), Complex.of(br, bi));
+	}
+	
+	// read iteration if given
+	if(isInputGiven(maxIterationInput)){
+	    int i = readIntInput(maxIterationInput);
+	    builder = builder.maxIteration(i);
+	}
+	
+	// read step if given
+	if(isInputGiven(discreteStepInput)){
+	    double s = readDoubleInput(discreteStepInput);
+	    builder = builder.discreteStep(s);
+	}
+	
+	// read complex rectangle if given
+	if(isInputGiven(xMinInput)
+	   && isInputGiven(xMaxInput)
+	   && isInputGiven(yMinInput)
+	   && isInputGiven(yMaxInput)){
+	    double xMin = readDoubleInput(xMinInput);
+	    double xMax = readDoubleInput(xMaxInput);
+	    double yMin = readDoubleInput(yMinInput);
+	    double yMax = readDoubleInput(yMaxInput);
+	    builder = builder.xMin(xMin).xMax(xMax).yMin(yMin).yMax(yMax);
+	}
+	
+	// read image dimensions if given
+	if(isInputGiven(imageWidthInput)){
+	    int w = readIntInput(imageWidthInput);
+	    builder = builder.imageWidth(w);
+	}
+	
+	if(isInputGiven(imageHeightInput)){
+	    int h = readIntInput(imageHeightInput);
+	    builder = builder.imageHeight(h);
+	}
+	
+	// read filename
+	if(isInputGiven(filenameInput)){
+	    String n = filenameInput.getText();
+	    builder = builder.fileName(n);
+	}
+	return builder.build();
     }
 
     // builds the Mandelbrot fractal
-    private Mandelbrot buildMandelbrotFractal() {
+    private Mandelbrot buildMandelbrotFractal() throws IllegalArgumentException {
 	Mandelbrot.Builder builder = new Mandelbrot.Builder();
-	try{
-
-	    // read iteration if given
-	    if(isInputGiven(maxIterationInput)){
-		int i = readIntInput(maxIterationInput);
-		builder = builder.maxIteration(i);
-	    }
-
-	    // read step if given
-	    if(isInputGiven(discreteStepInput)){
-		double s = readDoubleInput(discreteStepInput);
-		builder = builder.discreteStep(s);
-	    }
-
-	    // read complex rectangle if given
-	    if(isInputGiven(xMinInput)
-	       && isInputGiven(xMaxInput)
-	       && isInputGiven(yMinInput)
-	       && isInputGiven(yMaxInput)){
-		double xMin = readDoubleInput(xMinInput);
-		double xMax = readDoubleInput(xMaxInput);
-		double yMin = readDoubleInput(yMinInput);
-		double yMax = readDoubleInput(yMaxInput);
-		builder = builder.xMin(xMin).xMax(xMax).yMin(yMin).yMax(yMax);
-	    }
-
-	    // read image dimensions if given
-	    if(isInputGiven(imageWidthInput) && isInputGiven(imageHeightInput)){
-		int w = readIntInput(imageWidthInput);
-		int h = readIntInput(imageHeightInput);
-		builder = builder.imageWidth(w).imageHeight(h);
-	    }
-
-	    // read filename
-	    if(isInputGiven(filenameInput)){
-		String n = filenameInput.getText();
-		builder = builder.fileName(n);
-	    }
-
-	    return builder.build();
-
-	} catch(IllegalArgumentException iae){
-	    // show alert box
+	
+	// read iteration if given
+	if(isInputGiven(maxIterationInput)){
+	    int i = readIntInput(maxIterationInput);
+	    builder = builder.maxIteration(i);
 	}
 
-	return null;
+	// read step if given
+	if(isInputGiven(discreteStepInput)){
+	    double s = readDoubleInput(discreteStepInput);
+	    builder = builder.discreteStep(s);
+	}
+
+	// read complex rectangle if given
+	if(isInputGiven(xMinInput)
+	   && isInputGiven(xMaxInput)
+	   && isInputGiven(yMinInput)
+	   && isInputGiven(yMaxInput)){
+	    double xMin = readDoubleInput(xMinInput);
+	    double xMax = readDoubleInput(xMaxInput);
+	    double yMin = readDoubleInput(yMinInput);
+	    double yMax = readDoubleInput(yMaxInput);
+	    builder = builder.xMin(xMin).xMax(xMax).yMin(yMin).yMax(yMax);
+	}
+
+	// read image dimensions if given
+	if(isInputGiven(imageWidthInput)){
+	    int w = readIntInput(imageWidthInput);
+	    builder = builder.imageWidth(w);
+	}
+	
+	if(isInputGiven(imageHeightInput)){
+	    int h = readIntInput(imageHeightInput);
+	    builder = builder.imageHeight(h);
+	}
+
+	// read filename
+	if(isInputGiven(filenameInput)){
+	    String n = filenameInput.getText();
+	    builder = builder.fileName(n);
+	}
+	return builder.build();
     }
 
     // builds the fractal
     private void buildFractal(){
-	System.out.println("PRESSED BUILD BUTTON");
-	if(fractalSelected.getText().equals("Julia"))
-	    fractalToBuild = buildJuliaFractal();
-	if(fractalSelected.getText().equals("Mandelbrot"))
-	    fractalToBuild = buildMandelbrotFractal();
-
+	try {
+	    if(fractalSelected.getText().equals("Julia"))
+		fractalToBuild = buildJuliaFractal();
+	    if(fractalSelected.getText().equals("Mandelbrot"))
+		fractalToBuild = buildMandelbrotFractal();
+	} catch(Exception e){
+	    showErrorAlert();
+	    fractalToBuild = null;
+	}
+	
 	if(fractalToBuild != null){
 	    stateLabel.setText("Building...");
 	    fractalSelected.setText("Select a fractal to build");
