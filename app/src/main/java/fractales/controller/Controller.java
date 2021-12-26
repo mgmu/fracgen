@@ -77,13 +77,25 @@ public class Controller {
     // the image view that displays the fractal image
     @FXML private ImageView fractalDisplay;
 
+    // the zoom button
+    @FXML private Button zoomInButton;
+
+    // the selection for the zoom zone
+    @FXML private MenuButton zoomZoneSelection;
+
+    //The last fractal generated
+    private String lastFractal;
+
     // initialize the state of the view upon launch
     @FXML private void initialize(){
 	fractalSelected.setText("Select a fractal to build");
 	initFractalSelection();
+  initZoomZoneSelection();
 	disableFields(true);
 	buildButton.setDisable(true);
 	buildButton.setOnAction(e -> buildFractal());
+  zoomInButton.setOnAction(e -> zoomInAction());
+  zoomInButton.setDisable(true);
     }
 
     // tries to read a double input
@@ -127,7 +139,7 @@ public class Controller {
 	    double b = readDoubleInput(cstImPartInput);
 	    builder = builder.complexConstant(Complex.of(a,b));
 	}
-	
+
 	// read the iteration function factors if given
 	if(isInputGiven(alphaRealPartInput)
 	   && isInputGiven(alphaImPartInput)
@@ -137,23 +149,23 @@ public class Controller {
 	    double ai = readDoubleInput(alphaImPartInput);
 	    double br = readDoubleInput(betaRealPartInput);
 	    double bi = readDoubleInput(betaImPartInput);
-	    
+
 	    builder = builder
 		.iterationFunction(Complex.of(ar, ai), Complex.of(br, bi));
 	}
-	
+
 	// read iteration if given
 	if(isInputGiven(maxIterationInput)){
 	    int i = readIntInput(maxIterationInput);
 	    builder = builder.maxIteration(i);
 	}
-	
+
 	// read step if given
 	if(isInputGiven(discreteStepInput)){
 	    double s = readDoubleInput(discreteStepInput);
 	    builder = builder.discreteStep(s);
 	}
-	
+
 	// read complex rectangle if given
 	if(isInputGiven(xMinInput)
 	   && isInputGiven(xMaxInput)
@@ -165,18 +177,18 @@ public class Controller {
 	    double yMax = readDoubleInput(yMaxInput);
 	    builder = builder.xMin(xMin).xMax(xMax).yMin(yMin).yMax(yMax);
 	}
-	
+
 	// read image dimensions if given
 	if(isInputGiven(imageWidthInput)){
 	    int w = readIntInput(imageWidthInput);
 	    builder = builder.imageWidth(w);
 	}
-	
+
 	if(isInputGiven(imageHeightInput)){
 	    int h = readIntInput(imageHeightInput);
 	    builder = builder.imageHeight(h);
 	}
-	
+
 	// read filename
 	if(isInputGiven(filenameInput)){
 	    String n = filenameInput.getText();
@@ -188,7 +200,7 @@ public class Controller {
     // builds the Mandelbrot fractal
     private Mandelbrot buildMandelbrotFractal() throws IllegalArgumentException {
 	Mandelbrot.Builder builder = new Mandelbrot.Builder();
-	
+
 	// read iteration if given
 	if(isInputGiven(maxIterationInput)){
 	    int i = readIntInput(maxIterationInput);
@@ -218,7 +230,7 @@ public class Controller {
 	    int w = readIntInput(imageWidthInput);
 	    builder = builder.imageWidth(w);
 	}
-	
+
 	if(isInputGiven(imageHeightInput)){
 	    int h = readIntInput(imageHeightInput);
 	    builder = builder.imageHeight(h);
@@ -235,27 +247,29 @@ public class Controller {
     // builds the fractal
     private void buildFractal(){
 	try {
-	    if(fractalSelected.getText().equals("Julia"))
-		fractalToBuild = buildJuliaFractal();
-	    if(fractalSelected.getText().equals("Mandelbrot"))
-		fractalToBuild = buildMandelbrotFractal();
+	    if(fractalSelected.getText().equals("Julia")){
+        fractalToBuild = buildJuliaFractal();
+        lastFractal = "Julia";
+      }
+	    if(fractalSelected.getText().equals("Mandelbrot")){
+        fractalToBuild = buildMandelbrotFractal();
+        lastFractal = "Mandelbrot";
+      }
 	} catch(Exception e){
 	    showErrorAlert();
 	    fractalToBuild = null;
 	}
-	
+
 	if(fractalToBuild != null){
 	    stateLabel.setText("Building...");
 	    fractalSelected.setText("Select a fractal to build");
 	    buildButton.setDisable(true);
-	    System.out.println("Building...");
 	    fractalImage = FractalImage.of(fractalToBuild);
-	    System.out.println("Saving image...");
 	    fractalImage.saveFile(); // saves the png image
-	    System.out.println("Display image");
 	    displayImage(); // displays it onto the screen
 	    stateLabel.setText("Built image "
 			       + fractalToBuild.getFileName() + " !");
+      zoomInButton.setDisable(false);
 	}
     }
 
@@ -324,4 +338,118 @@ public class Controller {
 		});
 	}
     }
+
+    // Initializes the zoom zone selection in the gui
+    private void initZoomZoneSelection(){
+      zoomZoneSelection.getItems().add(new ZoomMenuItem("TOP LEFT"));
+      zoomZoneSelection.getItems().add(new ZoomMenuItem("TOP RIGHT"));
+      zoomZoneSelection.getItems().add(new ZoomMenuItem("BOTTOM LEFT"));
+      zoomZoneSelection.getItems().add(new ZoomMenuItem("BOTTOM RIGHT"));
+    }
+
+    // This menu item gives the choice to the user for the zoom zone.
+    private class ZoomMenuItem extends MenuItem {
+      ZoomMenuItem(String name){
+        super(name);
+        this.setOnAction(e -> {
+          zoomZoneSelection.setText(name);
+          zoomInButton.setDisable(false);
+        });
+      }
+    }
+
+    // zooms into the displayed image
+    private void zoomInAction(){
+
+      if(lastFractal.equals("Julia")){
+        Julia.Builder builder = new Julia.Builder();
+        // builder.complexConstant();
+        builder.imageHeight((int)(fractalToBuild.getHeight()/1.25));
+        builder.imageWidth((int)(fractalToBuild.getWidth()/1.25));
+        builder.fileName(fractalToBuild.getFileName());
+        builder.discreteStep(fractalToBuild.getDiscreteStep());
+        builder
+          .iterationFunction(((Julia)fractalToBuild).getIterationFunction());
+        builder.complexConstant(((Julia)fractalToBuild).getComplexConstant());
+
+        if(zoomZoneSelection.getText().equals("TOP LEFT")){
+          builder.xMin(fractalToBuild.getXMin());
+          builder.xMax(fractalToBuild.getXMax()/2);
+          builder.yMin(fractalToBuild.getYMin());
+          builder.yMax(fractalToBuild.getYMax());
+        }
+        else if(zoomZoneSelection.getText().equals("TOP RIGHT")){
+          builder.xMin(fractalToBuild.getXMin()/2);
+          builder.xMax(fractalToBuild.getXMax());
+          builder.yMin(fractalToBuild.getYMin());
+          builder.yMax(fractalToBuild.getYMax());
+        }
+        else if(zoomZoneSelection.getText().equals("BOTTOM LEFT")){
+          builder.xMin(fractalToBuild.getXMin());
+          builder.xMax(fractalToBuild.getXMax());
+          builder.yMin(fractalToBuild.getYMin());
+          builder.yMax(fractalToBuild.getYMax()/2);
+        }
+        else if(zoomZoneSelection.getText().equals("BOTTOM RIGHT")){
+          builder.xMin(fractalToBuild.getXMin()/2);
+          builder.xMax(fractalToBuild.getXMax());
+          builder.yMin(fractalToBuild.getYMin());
+          builder.yMax(fractalToBuild.getYMax()/2);
+        }
+        else
+        {
+          stateLabel.setText("Choose a zone for the zoom");
+          return;
+        }
+        fractalToBuild = builder.build();
+      }
+      else if (lastFractal.equals("Mandelbrot")){
+
+        Mandelbrot.Builder builder = new Mandelbrot.Builder();
+        builder.imageHeight((int)(fractalToBuild.getHeight()/1.25));
+        builder.imageWidth((int)(fractalToBuild.getWidth()/1.25));
+        builder.fileName(fractalToBuild.getFileName());
+        builder.discreteStep(fractalToBuild.getDiscreteStep());
+
+        if(zoomZoneSelection.getText().equals("TOP LEFT")){
+          builder.xMin(fractalToBuild.getXMin());
+          builder.xMax(fractalToBuild.getXMax()/2);
+          builder.yMin(fractalToBuild.getYMin());
+          builder.yMax(fractalToBuild.getYMax());
+        }
+        else if(zoomZoneSelection.getText().equals("TOP RIGHT")){
+          builder.xMin(fractalToBuild.getXMin()/2);
+          builder.xMax(fractalToBuild.getXMax());
+          builder.yMin(fractalToBuild.getYMin());
+          builder.yMax(fractalToBuild.getYMax());
+        }
+        else if(zoomZoneSelection.getText().equals("BOTTOM LEFT")){
+          builder.xMin(fractalToBuild.getXMin());
+          builder.xMax(fractalToBuild.getXMax());
+          builder.yMin(fractalToBuild.getYMin());
+          builder.yMax(fractalToBuild.getYMax()/2);
+        }
+        else if(zoomZoneSelection.getText().equals("BOTTOM RIGHT")){
+          builder.xMin(fractalToBuild.getXMin()/2);
+          builder.xMax(fractalToBuild.getXMax());
+          builder.yMin(fractalToBuild.getYMin());
+          builder.yMax(fractalToBuild.getYMax()/2);
+        }
+        else
+        {
+          stateLabel.setText("Choose a zone for the zoom");
+          return;
+        }
+        fractalToBuild = builder.build();
+      }
+	    fractalSelected.setText("Select a fractal to build");
+	    buildButton.setDisable(true);
+	    fractalImage = FractalImage.of(fractalToBuild);
+	    fractalImage.saveFile(); // saves the png image
+	    displayImage(); // displays it onto the screen
+	    stateLabel.setText("Image "
+			       + fractalToBuild.getFileName() + " zoomed !");
+    }
+
+
 }
