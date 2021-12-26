@@ -11,7 +11,7 @@ public interface Fractal {
     double RADIUS = 2.0;
 
     /**
-     * Computes the divergence index of each complex in the 
+     * Computes the divergence index of each complex in the
      * rectangle delimeted by xMin xMax yMin yMax of the complex plane
      * and stores the resulting indices in a 2D array
      *
@@ -19,7 +19,7 @@ public interface Fractal {
      * corresponding complex number
      */
     int[][] getDivergenceIndexMatrix();
-    
+
     /**
      * Computes the divergence index of Complex z
      *
@@ -77,7 +77,7 @@ public interface Fractal {
      * @return the minimal value along the y-axis
      */
     double getYMin();
-        
+
     /**
      * Returns the maximal value along the y-axis
      *
@@ -89,7 +89,7 @@ public interface Fractal {
      * Returns an int of RGB format that represents the color associated
      * to the specified int divergenceIndex
      *
-     * @param divergenceIndex A divergence index 
+     * @param divergenceIndex A divergence index
      * @return The color associated to the given int divergence index
      */
     int getColorFromDivergenceIndex(int divergenceIndex);

@@ -93,7 +93,7 @@ public class Julia implements Fractal {
 
 	/**
 	 * Sets the iteration function expression.
-	 * The iteration function is of the form : 
+	 * The iteration function is of the form :
 	 * f(z) = alpha * z^2 + beta * z + complexConstant
 	 * where alpha and beta are Complex numbers
 	 *
@@ -109,7 +109,12 @@ public class Julia implements Fractal {
 	    };
 	    return this;
 	}
-	
+
+  public Builder iterationFunction(Function<Complex,Complex> fun){
+    this.iterationFunction = fun;
+    return this;
+  }
+
 	/**
 	 * Sets the maximum iteration value for the iteration function
 	 *
@@ -354,5 +359,13 @@ public class Julia implements Fractal {
     @Override
     public double getYMax(){
 	return this.yMax;
+    }
+
+    public Function<Complex,Complex> getIterationFunction(){
+      return this.iterationFunction;
+    }
+
+    public Complex getComplexConstant(){
+      return this.complexConstant;
     }
 }

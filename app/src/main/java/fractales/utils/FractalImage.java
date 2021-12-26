@@ -43,7 +43,7 @@ public class FractalImage {
     public BufferedImage createImage(){
 	int w = fractal.getWidth();
 	int h = fractal.getHeight();
-	System.out.println("w = " + w + " h = " + h);
+	// System.out.println("w = " + w + " h = " + h);
 	var img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 
 	int[][] divMatrix = fractal.getDivergenceIndexMatrix();
