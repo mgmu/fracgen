@@ -180,9 +180,10 @@ public class App extends Application {
 		launch(args);
 	    } else { // launches console version
 
+    // must take exactly one of the two args
 		// can only generate one fractal
 		if(commandLine.hasOption("julia")
-		   && commandLine.hasOption("mandelbrot")){
+		   == commandLine.hasOption("mandelbrot")){
 		    helper.printHelp(" ", options);
 		    System.exit(0);
 		}
@@ -192,7 +193,7 @@ public class App extends Application {
 		    set = "julia";
 
 		    if(commandLine.hasOption("constant")){
-			
+
 			//parsing constant
 			double constantReal =
 			    Double.parseDouble(commandLine
@@ -206,7 +207,7 @@ public class App extends Application {
 		    }
 
 		    if(commandLine.hasOption("iterFun")){
-			
+
 			//parsing iterFun
 			//parsing alpha factor
 			double alphaReal =
@@ -361,7 +362,7 @@ public class App extends Application {
 		} else if(set.equals("mandelbrot")){
 		    fractal = mandelbrotBuilder.build();
 		}
-		
+
 		FractalImage fi = FractalImage.of(fractal);
 		System.out.println("Saving...");
 		fi.saveFile();
