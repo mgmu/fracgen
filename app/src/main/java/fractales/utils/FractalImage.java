@@ -43,7 +43,6 @@ public class FractalImage {
     public BufferedImage createImage(){
 	int w = fractal.getWidth();
 	int h = fractal.getHeight();
-	// System.out.println("w = " + w + " h = " + h);
 	var img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 
 	int[][] divMatrix = fractal.getDivergenceIndexMatrix();
@@ -65,6 +64,8 @@ public class FractalImage {
      */
 
     public void saveFile(){
+	FractalText ft = FractalText.of(fractal);
+	ft.saveFile();
 	File file =
 	    new File("/tmp/" + fractal.getFileName() + ".png");
 	path = file.getAbsolutePath();
@@ -72,6 +73,7 @@ public class FractalImage {
 	    ImageIO.write(createImage(), "PNG", file);
 	} catch (Exception e){
 	    e.printStackTrace();
+	    System.out.println("ERROR SAVING PNG");
 	    System.exit(-1);
 	}
     }

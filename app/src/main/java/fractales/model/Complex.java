@@ -1,5 +1,7 @@
 package fractales.model;
 
+import java.util.Scanner;
+
 /**
  * This class encapsulates a complex number.
  * It admits algebric representation, addition, substraction and multiplication 
@@ -54,15 +56,30 @@ public final class Complex{
 	return new Complex(realPart, imaginaryPart);
     }
 
+    /**
+     * Returns a new complex number from the given string, or null if the
+     * string does not correspond.
+     * The string must be of the form "<double value> <double value>"
+     * 
+     * @param complex The string corresponding to a complex
+     * @return A new Complex number, or null if the string does not match
+     */
+    public static Complex fromString(String complex){
+	try {
+	    Scanner sc = new Scanner(complex);
+	    sc = sc.useDelimiter(" ");
+	    double a = sc.nextDouble();
+	    double b = sc.nextDouble();
+	    return new Complex(a, b);
+	} catch(Exception e){
+	    System.out.println("Error creating Complex number...");
+	    return null;
+	}
+    }
+    
     @Override
     public String toString(){
-	String toString = "z = " + re;
-	if(im > 0)
-	    return toString + " + i * (" + im + ")";
-	else if(im < 0)
-	    return toString + " - i * (" + (im * -1) + ")";
-	else
-	    return toString;
+	return re + " " + im;
     }
 
     /**

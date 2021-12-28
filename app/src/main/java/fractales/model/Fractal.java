@@ -5,6 +5,10 @@ package fractales.model;
  */
 public interface Fractal {
 
+    public enum FractalType {
+	JULIA, MANDELBROT;
+    }
+
     /**
      * Radius value that bounds the iteration function
      */
@@ -60,30 +64,65 @@ public interface Fractal {
     /**
      * Returns the minimal value along the x-axis
      *
-     * @return the minimal value along the x-axis
+     * @return The minimal value along the x-axis
      */
     double getXMin();
 
     /**
      * Returns the maximal value along the x-axis
      *
-     * @return the maximal value along the x-axis
+     * @return The maximal value along the x-axis
      */
     double getXMax();
 
     /**
      * Returns the minimal value along the y-axis
      *
-     * @return the minimal value along the y-axis
+     * @return The minimal value along the y-axis
      */
     double getYMin();
 
     /**
      * Returns the maximal value along the y-axis
      *
-     * @return the maximal value along the y-axis
+     * @return The maximal value along the y-axis
      */
     double getYMax();
+
+    /**
+     * Returns the type of the fractal
+     *
+     * @return The type of the fractal
+     */
+    FractalType getFractalType();
+
+    /**
+     * Returns the maximum number of iteration for the iteration function
+     *
+     * @return The maximum number of iteration for the iteration function
+     */
+    int getMaxIteration();
+
+    /**
+     * Returns the alpha color factor
+     *
+     * @return The alpha color factor
+     */
+    float getAlphaColor();
+
+    /**
+     * Returns the beta color factor
+     *
+     * @return The beta color factor
+     */
+    float getBetaColor();
+
+    /**
+     * Returns the gamma color factor
+     *
+     * @return The gamma color factor
+     */
+    float getGammaColor();
 
     /**
      * Returns an int of RGB format that represents the color associated

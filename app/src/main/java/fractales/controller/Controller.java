@@ -3,7 +3,8 @@ package fractales.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import fractales.model.*;
-import fractales.utils.FractalImage;
+import fractales.model.Fractal.FractalType;
+import fractales.utils.*;
 import java.util.*;
 import javafx.scene.image.*;
 
@@ -86,16 +87,23 @@ public class Controller {
     //The last fractal generated
     private String lastFractal;
 
+    // the name of the build file
+    @FXML private TextField buildFromFileInput;
+
+    // the button for building the fractal from a file
+    @FXML private Button buildFromFileButton;
+
     // initialize the state of the view upon launch
     @FXML private void initialize(){
 	fractalSelected.setText("Select a fractal to build");
 	initFractalSelection();
-  initZoomZoneSelection();
+	initZoomZoneSelection();
 	disableFields(true);
 	buildButton.setDisable(true);
 	buildButton.setOnAction(e -> buildFractal());
-  zoomInButton.setOnAction(e -> zoomInAction());
-  zoomInButton.setDisable(true);
+	zoomInButton.setOnAction(e -> zoomInAction());
+	zoomInButton.setDisable(true);
+	buildFromFileButton.setOnAction(e -> buildFromFile());
     }
 
     // tries to read a double input
@@ -247,29 +255,27 @@ public class Controller {
     // builds the fractal
     private void buildFractal(){
 	try {
-	    if(fractalSelected.getText().equals("Julia")){
-        fractalToBuild = buildJuliaFractal();
-        lastFractal = "Julia";
-      }
-	    if(fractalSelected.getText().equals("Mandelbrot")){
-        fractalToBuild = buildMandelbrotFractal();
-        lastFractal = "Mandelbrot";
-      }
+	    if(fractalSelected.getText() == FractalType.JULIA.name()){
+		fractalToBuild = buildJuliaFractal();
+		lastFractal = "Julia";
+	    }
+	    if(fractalSelected.getText() == FractalType.MANDELBROT.name()){
+		fractalToBuild = buildMandelbrotFractal();
+		lastFractal = "Mandelbrot";
+	    }
 	} catch(Exception e){
 	    showErrorAlert();
 	    fractalToBuild = null;
 	}
-
 	if(fractalToBuild != null){
-	    stateLabel.setText("Building...");
 	    fractalSelected.setText("Select a fractal to build");
 	    buildButton.setDisable(true);
+	    buildFromFileButton.setDisable(true);
 	    fractalImage = FractalImage.of(fractalToBuild);
 	    fractalImage.saveFile(); // saves the png image
 	    displayImage(); // displays it onto the screen
-	    stateLabel.setText("Built image "
-			       + fractalToBuild.getFileName() + " !");
-      zoomInButton.setDisable(false);
+	    zoomInButton.setDisable(false);
+	    buildFromFileButton.setDisable(false);
 	}
     }
 
@@ -304,9 +310,9 @@ public class Controller {
     }
 
     // displays allowed fields accoding to the selected fractal
-    private void displayAllowedFields(String fractalName){
+    private void displayAllowedFields(FractalType fractalType){
 	disableFields(false);
-	if(fractalName.equals("Mandelbrot")){
+	if(fractalType == FractalType.MANDELBROT){
 	    alphaRealPartInput.setDisable(true);
 	    alphaImPartInput.setDisable(true);
 	    betaRealPartInput.setDisable(true);
@@ -319,21 +325,44 @@ public class Controller {
     // initializes the fractal selection in the gui
     private void initFractalSelection(){
 	fractalSelection.getItems()
-	    .add(new FractalMenuItem("Julia"));
+	    .add(new FractalMenuItem(FractalType.JULIA));
 	fractalSelection.getItems()
-	    .add(new FractalMenuItem("Mandelbrot"));
+	    .add(new FractalMenuItem(FractalType.MANDELBROT));
+    }
+
+    private void buildFromFile(){
+	buildFromFileButton.setDisable(true);
+	if(isInputGiven(buildFromFileInput)){
+	    String path = "/tmp/" + buildFromFileInput.getText() + ".txt";
+	    fractalToBuild = FractalText.textToImage(path);
+	    if(fractalToBuild != null){
+		fractalImage = FractalImage.of(fractalToBuild);
+		fractalImage.saveFile();
+		displayImage();
+		buildFromFileButton.setDisable(false);
+	    } else {
+		showErrorAlert();
+		buildFromFileButton.setDisable(false);		
+	    }
+	} else {
+	    showErrorAlert();
+	    buildFromFileButton.setDisable(false);	    
+	}
     }
 
     // This menu item encapsulates the corresponding fractal name
     // and enables/disables text fields accordingly
     private class FractalMenuItem extends MenuItem {
 
-	FractalMenuItem(String name){
-	    super(name);
+	FractalType fractalType;
+
+	FractalMenuItem(FractalType fractalType){
+	    super(fractalType.name());
+	    this.fractalType = fractalType;
 	    disableFields(true);
 	    this.setOnAction(e -> {
-		    displayAllowedFields(name);
-		    fractalSelected.setText(name);
+		    displayAllowedFields(fractalType);
+		    fractalSelected.setText(fractalType.name());
 		    buildButton.setDisable(false);
 		});
 	}
@@ -368,8 +397,8 @@ public class Controller {
         builder.imageWidth((int)(fractalToBuild.getWidth()/1.25));
         builder.fileName(fractalToBuild.getFileName());
         builder.discreteStep(fractalToBuild.getDiscreteStep());
-        builder
-          .iterationFunction(((Julia)fractalToBuild).getIterationFunction());
+        builder.iterationFunction(((Julia)fractalToBuild).getAlphaFactor(),
+				  ((Julia)fractalToBuild).getBetaFactor());
         builder.complexConstant(((Julia)fractalToBuild).getComplexConstant());
 
         if(zoomZoneSelection.getText().equals("TOP LEFT")){
@@ -450,6 +479,4 @@ public class Controller {
 	    stateLabel.setText("Image "
 			       + fractalToBuild.getFileName() + " zoomed !");
     }
-
-
 }
