@@ -28,6 +28,9 @@ public class Mandelbrot implements Fractal {
     private final float betaColor;
     private final float gammaColor;
 
+    // the fractal type
+    private final FractalType fractalType = FractalType.MANDELBROT;
+
     // Constructs from Mandelbrot builder
     private Mandelbrot(Builder builder){
 	this.maxIteration = builder.maxIteration;
@@ -268,19 +271,14 @@ public class Mandelbrot implements Fractal {
      * @return The color associated to the given int divergence index
      */
     public int getColorFromDivergenceIndex(int divergenceIndex){
-	// rgb=Color.HSBtoRGB((float)div/maxIter, 0.7f, (float)div/maxIter);
 	if(divergenceIndex == maxIteration - 1)
 	    return 0;
 	return Color
 	    .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
 		      betaColor,
 		      gammaColor);
-  // return Color
-	//     .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
-	// 	      (float)divergenceIndex * betaColor / (float)maxIteration,
-	// 	      (float)divergenceIndex * gammaColor / (float)maxIteration);
     }
-
+    
     @Override
     public double getDiscreteStep(){
 	return this.discreteStep;
@@ -304,5 +302,30 @@ public class Mandelbrot implements Fractal {
     @Override
     public double getYMax(){
 	return this.yMax;
+    }
+
+    @Override
+    public FractalType getFractalType(){
+	return this.fractalType;
+    }
+
+    @Override
+    public int getMaxIteration(){
+	return this.maxIteration;
+    }
+
+    @Override
+    public float getAlphaColor(){
+	return this.alphaColor;
+    }
+
+    @Override
+    public float getBetaColor(){
+	return this.betaColor;
+    }
+
+    @Override
+    public float getGammaColor(){
+	return this.gammaColor;
     }
 }

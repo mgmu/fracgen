@@ -27,7 +27,9 @@ public class Julia implements Fractal {
     private final int imageWidth;
     private final String fileName;
 
-    // iteration function and constant complex
+    // iteration function and complex constant
+    private final Complex alphaFactor;
+    private final Complex betaFactor;
     private final Function <Complex,Complex> iterationFunction;
     private final Complex complexConstant;
 
@@ -36,6 +38,8 @@ public class Julia implements Fractal {
     private final float betaColor;
     private final float gammaColor;
 
+    // the fractal type
+    private final FractalType fractalType = FractalType.JULIA;
 
     // Constructs from Julia builder
     private Julia(Builder builder){
@@ -46,6 +50,8 @@ public class Julia implements Fractal {
 	this.xMax = builder.xMax;
 	this.yMin = builder.yMin;
 	this.yMax = builder.yMax;
+	this.alphaFactor = builder.alphaFactor;
+	this.betaFactor = builder.betaFactor;
 	this.iterationFunction = builder.iterationFunction;
 	this.imageHeight = builder.imageHeight;
 	this.imageWidth = builder.imageWidth;
@@ -70,10 +76,12 @@ public class Julia implements Fractal {
 	private int imageHeight = 0;
 	private int imageWidth = 0;
 	private String fileName = "Julia";
+	private Complex alphaFactor = Complex.getONE();
+	private Complex betaFactor = Complex.getZERO();
 	private Function<Complex, Complex> iterationFunction =
 	    (z) -> {
-	    return Complex.getONE().multiply(z.multiply(z))
-	    .add(z.multiply(Complex.getZERO()))
+	    return alphaFactor.multiply(z.multiply(z))
+	    .add(z.multiply(betaFactor))
 	    .add(complexConstant);
 	};
 	private float alphaColor = 20.0f;
@@ -102,18 +110,10 @@ public class Julia implements Fractal {
 	 * @return This Builder instance
 	 */
 	public Builder iterationFunction(Complex alpha, Complex beta){
-	    this.iterationFunction = (z) -> {
-		return alpha.multiply(z.multiply(z))
-		.add(beta.multiply(z))
-		.add(complexConstant);
-	    };
+	    this.alphaFactor = alpha;
+	    this.betaFactor = beta;
 	    return this;
 	}
-
-  public Builder iterationFunction(Function<Complex,Complex> fun){
-    this.iterationFunction = fun;
-    return this;
-  }
 
 	/**
 	 * Sets the maximum iteration value for the iteration function
@@ -218,6 +218,7 @@ public class Julia implements Fractal {
 
 	/**
 	 * Sets the factors for the color function.
+	 *
 	 * @param alpha First factor
 	 * @param beta Second factor
 	 * @param gamma Third factor
@@ -323,17 +324,12 @@ public class Julia implements Fractal {
      */
     @Override
     public int getColorFromDivergenceIndex(int divergenceIndex){
-	// rgb=Color.HSBtoRGB((float)div/maxIter, 0.7f, (float)div/maxIter);
 	if(divergenceIndex == maxIteration - 1)
 	    return 0;
 	return Color
 	    .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
 		      betaColor,
 		      gammaColor);
-	// return Color
-	//     .HSBtoRGB((float)divergenceIndex * alphaColor / (float)maxIteration,
-	// 	      (float)divergenceIndex * betaColor / (float)maxIteration,
-	// 	      (float)divergenceIndex * gammaColor / (float)maxIteration);
     }
 
     @Override
@@ -361,11 +357,55 @@ public class Julia implements Fractal {
 	return this.yMax;
     }
 
-    public Function<Complex,Complex> getIterationFunction(){
-      return this.iterationFunction;
+    @Override
+    public FractalType getFractalType(){
+	return this.fractalType;
     }
 
+    @Override
+    public int getMaxIteration(){
+	return this.maxIteration;
+    }
+
+    /**
+     * Returns the complex constant
+     *
+     * @return The complex constant
+     */
     public Complex getComplexConstant(){
-      return this.complexConstant;
+	return this.complexConstant;
+    }
+
+    /**
+     * Returns the alpha factor of the iteration function
+     *
+     * @return The alpha factor of the iteration function
+     */
+    public Complex getAlphaFactor(){
+	return this.alphaFactor;
+    }
+
+    /**
+     * Returns the beta factor of the iteration function
+     *
+     * @return The beta factor if the iteration function
+     */
+    public Complex getBetaFactor(){
+	return this.betaFactor;
+    }
+
+    @Override
+    public float getAlphaColor(){
+	return this.alphaColor;
+    }
+
+    @Override
+    public float getBetaColor(){
+	return this.betaColor;
+    }
+
+    @Override
+    public float getGammaColor(){
+	return this.gammaColor;
     }
 }
