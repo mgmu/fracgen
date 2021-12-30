@@ -172,6 +172,10 @@ public class Controller {
 	// read step if given
 	if(isInputGiven(discreteStepInput)){
 	    double s = readDoubleInput(discreteStepInput);
+      if(s >= 0.13 || s <= 0){
+        showErrorAlert();
+        return null;
+      }
 	    builder = builder.discreteStep(s);
 	}
 
@@ -219,6 +223,10 @@ public class Controller {
 	// read step if given
 	if(isInputGiven(discreteStepInput)){
 	    double s = readDoubleInput(discreteStepInput);
+      if(s >= 0.2 || s <= 0){
+        showErrorAlert();
+        return null;
+      }
 	    builder = builder.discreteStep(s);
 	}
 
