@@ -251,8 +251,18 @@ public class App extends Application {
 		    double step =
 			Double.parseDouble(commandLine.getOptionValue("step"));
 		    if(set.equals("julia")){
+          if(step >= 0.13 || step <= 0){
+            System.out.println
+            ("Step for a julia set must be positive and at least 0.13");
+            System.exit(0);
+          }
 			juliaBuilder.discreteStep(step);
 		    } else if(set.equals("mandelbrot")){
+          if(step >= 0.2 || step <= 0){
+            System.out.println
+            ("Step for a mandelbrot set must be positive and at least 0.2");
+            System.exit(0);
+          }
 			mandelbrotBuilder.discreteStep(step);
 		    }
 		}
