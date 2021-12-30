@@ -2,6 +2,7 @@ package fractales;
 
 import fractales.model.*;
 import fractales.utils.FractalImage;
+import fractales.utils.FractalText;
 import java.util.function.Function;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -128,6 +129,12 @@ public class App extends Application {
 	.desc("The iteration function")
 	.build();
 
+    private static final Option BUILD_FROM_FILE_OPT =
+  Option.builder("buildFrom")
+  .longOpt("buildFromFile")
+  .hasArg()
+  .desc("Builds an image from a text file.")
+  .build();
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -161,6 +168,7 @@ public class App extends Application {
 	options.addOption(MANDELBROT_OPT);
 	options.addOption(COMPLEX_CST_OPT);
 	options.addOption(ITER_FUN_OPT);
+	options.addOption(BUILD_FROM_FILE_OPT);
 
 	String set = "";
 
@@ -178,7 +186,20 @@ public class App extends Application {
 	    // if -gui or --graphics is present, launch gui version
 	    if(commandLine.hasOption("gui")){
 		launch(args);
-	    } else { // launches console version
+	    }
+      else if(commandLine.hasOption("buildFrom")) {
+        // builds an image from a text file
+        String path = "/tmp/" + commandLine.getOptionValue("buildFrom")+ ".txt";
+  	    Fractal fractal = FractalText.textToImage(path);
+  	    if(fractal != null){
+      		FractalImage fractalImage = FractalImage.of(fractal);
+      		fractalImage.saveFile();
+          System.exit(0);
+        } else {
+          System.out.println("Invalid file");
+        }
+      }
+      else { // launches console version
 
     // must take exactly one of the two args
 		// can only generate one fractal
