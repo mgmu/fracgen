@@ -111,13 +111,13 @@
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <Label fx:id="stateLabel" alignment="CENTER" layoutX="21.0" layoutY="748.0" prefHeight="16.0" prefWidth="217.0" textAlignment="CENTER">
+                  <Label fx:id="stateLabel" alignment="CENTER" layoutX="127.0" layoutY="833.0" prefHeight="16.0" prefWidth="217.0" textAlignment="CENTER">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <Button fx:id="zoomInButton" layoutX="35.0" layoutY="776.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="99.0" text="ZOOM IN" />
-                  <MenuButton fx:id="zoomZoneSelection" layoutX="144.0" layoutY="781.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="137.0" text="Zoom zone" />
+                  <Button fx:id="zoomInButton" layoutX="35.0" layoutY="645.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="99.0" text="ZOOM IN" />
+                  <MenuButton fx:id="zoomZoneSelection" layoutX="144.0" layoutY="650.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="137.0" text="Zoom zone" />
                   <Button fx:id="buildFromFileButton" layoutX="37.0" layoutY="729.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="136.0" text="BUILD from file" />
                   <TextField fx:id="buildFromFileInput" layoutX="184.0" layoutY="736.0" prefHeight="24.0" prefWidth="274.0" promptText="enter filename (without .txt extension)">
                      <tooltip>

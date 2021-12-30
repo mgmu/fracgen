@@ -103,6 +103,7 @@ public class Controller {
 	buildButton.setOnAction(e -> buildFractal());
 	zoomInButton.setOnAction(e -> zoomInAction());
 	zoomInButton.setDisable(true);
+  zoomZoneSelection.setDisable(true);
 	buildFromFileButton.setOnAction(e -> buildFromFile());
     }
 
@@ -275,6 +276,8 @@ public class Controller {
 	    fractalImage.saveFile(); // saves the png image
 	    displayImage(); // displays it onto the screen
 	    zoomInButton.setDisable(false);
+      zoomZoneSelection.setDisable(false);
+      zoomZoneSelection.setText("Zoom zone");
 	    buildFromFileButton.setDisable(false);
 	}
     }
@@ -340,13 +343,15 @@ public class Controller {
 		fractalImage.saveFile();
 		displayImage();
 		buildFromFileButton.setDisable(false);
+    zoomInButton.setDisable(false);
+    zoomZoneSelection.setDisable(false);
 	    } else {
 		showErrorAlert();
-		buildFromFileButton.setDisable(false);		
+		buildFromFileButton.setDisable(false);
 	    }
 	} else {
 	    showErrorAlert();
-	    buildFromFileButton.setDisable(false);	    
+	    buildFromFileButton.setDisable(false);
 	}
     }
 
