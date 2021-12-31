@@ -93,6 +93,15 @@ public class Controller {
     // the button for building the fractal from a file
     @FXML private Button buildFromFileButton;
 
+    // the alpha factor for the color function
+    @FXML private TextField alphaColorInput;
+
+    // the beta factor for the color function
+    @FXML private TextField betaColorInput;
+
+    // the gamma factor for the color function
+    @FXML private TextField gammaColorInput;
+
     // initialize the state of the view upon launch
     @FXML private void initialize(){
 	fractalSelected.setText("Select a fractal to build");
@@ -203,6 +212,16 @@ public class Controller {
 	    String n = filenameInput.getText();
 	    builder = builder.fileName(n);
 	}
+
+  if(isInputGiven(alphaColorInput)
+     && isInputGiven(betaColorInput)
+     && isInputGiven(gammaColorInput)){
+       float alpha = (float)(readDoubleInput(alphaColorInput));
+       float beta = (float)(readDoubleInput(betaColorInput));
+       float gamma = (float)(readDoubleInput(gammaColorInput));
+       builder = builder.colorFunction(alpha,beta,gamma);
+     }
+
 	return builder.build();
     }
 
@@ -250,6 +269,16 @@ public class Controller {
 	    String n = filenameInput.getText();
 	    builder = builder.fileName(n);
 	}
+
+  if(isInputGiven(alphaColorInput)
+	   && isInputGiven(betaColorInput)
+     && isInputGiven(gammaColorInput)){
+       float alpha = (float)(readDoubleInput(alphaColorInput));
+       float beta = (float)(readDoubleInput(betaColorInput));
+       float gamma = (float)(readDoubleInput(gammaColorInput));
+       builder = builder.colorFunction(alpha,beta,gamma);
+     }
+
 	return builder.build();
     }
 
@@ -310,6 +339,9 @@ public class Controller {
 	imageWidthInput.setDisable(disable);
 	imageHeightInput.setDisable(disable);
 	discreteStepInput.setDisable(disable);
+  alphaColorInput.setDisable(disable);
+  betaColorInput.setDisable(disable);
+  gammaColorInput.setDisable(disable);
     }
 
     // displays allowed fields accoding to the selected fractal
@@ -397,7 +429,6 @@ public class Controller {
 
       if(lastFractal.equals("Julia")){
         Julia.Builder builder = new Julia.Builder();
-        // builder.complexConstant();
         builder.imageHeight((int)(fractalToBuild.getHeight()/1.25));
         builder.imageWidth((int)(fractalToBuild.getWidth()/1.25));
         builder.fileName(fractalToBuild.getFileName());
@@ -405,7 +436,9 @@ public class Controller {
         builder.iterationFunction(((Julia)fractalToBuild).getAlphaFactor(),
 				  ((Julia)fractalToBuild).getBetaFactor());
         builder.complexConstant(((Julia)fractalToBuild).getComplexConstant());
-
+        builder.colorFunction(fractalToBuild.getAlphaColor(),
+          fractalToBuild.getBetaColor(), fractalToBuild.getGammaColor());
+          
         if(zoomZoneSelection.getText().equals("TOP LEFT")){
           builder.xMin(fractalToBuild.getXMin());
           builder.xMax(fractalToBuild.getXMax()/2);
@@ -444,6 +477,8 @@ public class Controller {
         builder.imageWidth((int)(fractalToBuild.getWidth()/1.25));
         builder.fileName(fractalToBuild.getFileName());
         builder.discreteStep(fractalToBuild.getDiscreteStep());
+        builder.colorFunction(fractalToBuild.getAlphaColor(),
+          fractalToBuild.getBetaColor(), fractalToBuild.getGammaColor());
 
         if(zoomZoneSelection.getText().equals("TOP LEFT")){
           builder.xMin(fractalToBuild.getXMin());
