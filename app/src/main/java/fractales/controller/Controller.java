@@ -8,6 +8,9 @@ import fractales.utils.*;
 import java.util.*;
 import javafx.scene.image.*;
 
+/**
+ * This class represents the controller.
+ */
 public class Controller {
 
     // fractal selection
@@ -102,7 +105,9 @@ public class Controller {
     // the gamma factor for the color function
     @FXML private TextField gammaColorInput;
 
-    // initialize the state of the view upon launch
+    /**
+     * Initializes the state of the view upon launch.
+     */
     @FXML private void initialize(){
 	fractalSelected.setText("Select a fractal to build");
 	initFractalSelection();
@@ -116,7 +121,9 @@ public class Controller {
 	buildFromFileButton.setOnAction(e -> buildFromFile());
     }
 
-    // tries to read a double input
+    /**
+     * Tries to read a double input
+     */
     private double readDoubleInput(TextField doubleInput)
 	throws IllegalArgumentException {
 	Scanner sc = new Scanner(doubleInput.getText());
@@ -125,7 +132,9 @@ public class Controller {
 	throw new IllegalArgumentException();
     }
 
-    // tries to read an int input
+    /**
+     * Tries to read an int input.
+     */
     private int readIntInput(TextField intInput)
 	throws IllegalArgumentException {
 	Scanner sc = new Scanner(intInput.getText());
@@ -134,12 +143,16 @@ public class Controller {
 	throw new IllegalArgumentException();
     }
 
-    // returns true if the text field is not empty, false otherwise
+    /**
+     * Returns true if the text field is not empty, false otherwise
+     */
     private boolean isInputGiven(TextField input){
 	return input.getLength() > 0;
     }
 
-    // displays an error alert with the specified parameters
+    /**
+     * Displays an error alert with the specified parameters
+     */
     private void showErrorAlert(){
 	Alert alert = new Alert(Alert.AlertType.ERROR);
 	alert.setContentText("You have provided invalid input.\n"
@@ -147,7 +160,9 @@ public class Controller {
 	alert.showAndWait();
     }
 
-    // builds the fractal Julia
+    /**
+     * Builds the Julia fractal.
+     */
     private Julia buildJuliaFractal(){
 	Julia.Builder builder = new Julia.Builder();
 
@@ -229,7 +244,9 @@ public class Controller {
 	return builder.build();
     }
 
-    // builds the Mandelbrot fractal
+    /**
+     * Builds the Mandelbrot fractal.
+     */
     private Mandelbrot buildMandelbrotFractal() throws IllegalArgumentException {
 	Mandelbrot.Builder builder = new Mandelbrot.Builder();
 
@@ -290,7 +307,9 @@ public class Controller {
 	return builder.build();
     }
 
-    // builds the fractal
+    /**
+     * Builds the fractal.
+     */
     private void buildFractal(){
 	try {
 	    if(fractalSelected.getText() == FractalType.JULIA.name()){
@@ -319,7 +338,9 @@ public class Controller {
 	}
     }
 
-    // displays the generated fractal onto the screen
+    /**
+     * Displays the generated fractal onto the screen.
+     */
     private void displayImage(){
 	// the image is saved in /tmp
 	String path = "file://" + fractalImage.getPath();
@@ -330,7 +351,9 @@ public class Controller {
 	fractalDisplay.setFitHeight(1000);
     }
 
-    // if boolean disable is true, disables all text fields, enables otherwise
+    /**
+     * If boolean disable is true, disables all text fields, enables otherwise.
+     */
     private void disableFields(boolean disable){
 	filenameInput.setDisable(disable);
 	cstImPartInput.setDisable(disable);
@@ -352,7 +375,9 @@ public class Controller {
   gammaColorInput.setDisable(disable);
     }
 
-    // displays allowed fields accoding to the selected fractal
+    /**
+     * Displays allowed fields accoding to the selected fractal.
+     */
     private void displayAllowedFields(FractalType fractalType){
 	disableFields(false);
 	if(fractalType == FractalType.MANDELBROT){
@@ -365,7 +390,9 @@ public class Controller {
 	}
     }
 
-    // initializes the fractal selection in the gui
+    /**
+     * Initializes the fractal selection in the gui
+     */
     private void initFractalSelection(){
 	fractalSelection.getItems()
 	    .add(new FractalMenuItem(FractalType.JULIA));
@@ -373,6 +400,9 @@ public class Controller {
 	    .add(new FractalMenuItem(FractalType.MANDELBROT));
     }
 
+    /**
+     * Builds a fractal from a text file.
+     */
     private void buildFromFile(){
 	buildFromFileButton.setDisable(true);
 	if(isInputGiven(buildFromFileInput)){
@@ -381,6 +411,11 @@ public class Controller {
 	    if(fractalToBuild != null){
 		fractalImage = FractalImage.of(fractalToBuild);
 		fractalImage.saveFile();
+    if(fractalToBuild instanceof Julia){
+      lastFractal = "Julia";
+    } else{
+      lastFractal = "Mandelbrot";
+    }
 		displayImage();
 		buildFromFileButton.setDisable(false);
     zoomInButton.setDisable(false);
@@ -399,11 +434,8 @@ public class Controller {
     // and enables/disables text fields accordingly
     private class FractalMenuItem extends MenuItem {
 
-	FractalType fractalType;
-
 	FractalMenuItem(FractalType fractalType){
 	    super(fractalType.name());
-	    this.fractalType = fractalType;
 	    disableFields(true);
 	    this.setOnAction(e -> {
 		    displayAllowedFields(fractalType);
@@ -413,7 +445,9 @@ public class Controller {
 	}
     }
 
-    // Initializes the zoom zone selection in the gui
+    /**
+     * Initializes the zoom zone selection in the gui.
+     */
     private void initZoomZoneSelection(){
       zoomZoneSelection.getItems().add(new ZoomMenuItem("TOP LEFT"));
       zoomZoneSelection.getItems().add(new ZoomMenuItem("TOP RIGHT"));
@@ -432,21 +466,23 @@ public class Controller {
       }
     }
 
-    // zooms into the displayed image
+    /**
+     * Zooms into the displayed image.
+     */
     private void zoomInAction(){
 
       if(lastFractal.equals("Julia")){
         Julia.Builder builder = new Julia.Builder();
-        builder.imageHeight((int)(fractalToBuild.getHeight()/1.25));
-        builder.imageWidth((int)(fractalToBuild.getWidth()/1.25));
+        builder.imageHeight((int)fractalToBuild.getHeight());
+        builder.imageWidth((int)fractalToBuild.getWidth());
         builder.fileName(fractalToBuild.getFileName());
-        builder.discreteStep(fractalToBuild.getDiscreteStep());
+        builder.discreteStep(fractalToBuild.getDiscreteStep()*0.5);
         builder.iterationFunction(((Julia)fractalToBuild).getAlphaFactor(),
 				  ((Julia)fractalToBuild).getBetaFactor());
         builder.complexConstant(((Julia)fractalToBuild).getComplexConstant());
         builder.colorFunction(fractalToBuild.getAlphaColor(),
           fractalToBuild.getBetaColor(), fractalToBuild.getGammaColor());
-          
+
         if(zoomZoneSelection.getText().equals("TOP LEFT")){
           builder.xMin(fractalToBuild.getXMin());
           builder.xMax(fractalToBuild.getXMax()/2);
@@ -481,10 +517,10 @@ public class Controller {
       else if (lastFractal.equals("Mandelbrot")){
 
         Mandelbrot.Builder builder = new Mandelbrot.Builder();
-        builder.imageHeight((int)(fractalToBuild.getHeight()/1.25));
-        builder.imageWidth((int)(fractalToBuild.getWidth()/1.25));
+        builder.imageHeight((int)fractalToBuild.getHeight());
+        builder.imageWidth((int)fractalToBuild.getWidth());
         builder.fileName(fractalToBuild.getFileName());
-        builder.discreteStep(fractalToBuild.getDiscreteStep());
+        builder.discreteStep(fractalToBuild.getDiscreteStep() * 0.5);
         builder.colorFunction(fractalToBuild.getAlphaColor(),
           fractalToBuild.getBetaColor(), fractalToBuild.getGammaColor());
 

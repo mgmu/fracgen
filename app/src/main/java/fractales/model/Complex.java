@@ -70,6 +70,7 @@ public final class Complex{
 	    sc = sc.useDelimiter(" ");
 	    double a = sc.nextDouble();
 	    double b = sc.nextDouble();
+        sc.close();
 	    return new Complex(a, b);
 	} catch(Exception e){
 	    System.out.println("Error creating Complex number...");

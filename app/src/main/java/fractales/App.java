@@ -3,11 +3,7 @@ package fractales;
 import fractales.model.*;
 import fractales.utils.FractalImage;
 import fractales.utils.FractalText;
-import java.util.function.Function;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import javax.imageio.ImageIO;
-import java.awt.Color;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.*;
@@ -16,6 +12,7 @@ import org.apache.commons.cli.*;
 
 public class App extends Application {
 
+    // Gui option
     private static final Option GUI_OPT =
 	Option.builder("gui")
 	.longOpt("graphics")
@@ -27,94 +24,105 @@ public class App extends Application {
 	Option.builder("maxIter")
 	.longOpt("maxIteration")
 	.hasArg()
-  .argName("int")
+	.argName("int")
 	.valueSeparator()
 	.desc("Sets the maximal value of iterations for divergence computing")
 	.build();
 
+    // Step option
     private static final Option STEP_OPT =
 	Option.builder("step")
 	.longOpt("discreteStep")
 	.hasArg()
-  .argName("double")
+	.argName("double")
 	.valueSeparator()
 	.desc("Sets the discrete step value for the Complex plane")
 	.build();
 
+    // xMin option
     private static final Option XMIN_OPT =
 	Option.builder("xMin")
 	.hasArg()
 	.valueSeparator()
-  .argName("int")
+	.argName("int")
 	.desc("Sets the minimal value along the x-axis")
 	.build();
 
+    // xMax option
     private static final Option XMAX_OPT =
 	Option.builder("xMax")
 	.hasArg()
 	.valueSeparator()
-  .argName("int")
+	.argName("int")
 	.desc("Sets the maximal value along the x-axis")
 	.build();
 
+    // yMin option
     private static final Option YMIN_OPT =
 	Option.builder("yMin")
 	.hasArg()
 	.valueSeparator()
-  .argName("int")
+	.argName("int")
 	.desc("Sets the minimal value along the y-axis")
 	.build();
 
+    // yMax option
     private static final Option YMAX_OPT =
 	Option.builder("yMax")
 	.hasArg()
 	.valueSeparator()
-  .argName("int")
+	.argName("int")
 	.desc("Sets the maximal value along the y-axis")
 	.build();
 
+    // Image width option
     private static final Option IMG_W_OPT =
 	Option.builder("w")
 	.longOpt("imageWidth")
 	.hasArg()
 	.valueSeparator()
-  .argName("int")
+	.argName("int")
 	.desc("Sets the width of the image in which to store the fractal")
 	.build();
 
+    // Image height option
     private static final Option IMG_H_OPT =
 	Option.builder("h")
 	.longOpt("imageHeight")
 	.hasArg()
 	.valueSeparator()
-  .argName("int")
+	.argName("int")
 	.desc("Sets the height of the image in which to store the fractal")
 	.build();
 
+    // Filename option
     private static final Option FILENAME_OPT =
 	Option.builder("name")
 	.longOpt("filename")
 	.hasArg()
 	.valueSeparator()
-  .argName("String")
+	.argName("String")
 	.desc("Sets the name of the while in which to store the image")
 	.build();
 
+    // Color function option
     private static final Option COLOR_FUN_OPT =
 	Option.builder("colorFun")
 	.longOpt("colorFunction")
 	.hasArg()
 	.numberOfArgs(3)
 	.valueSeparator(';')
-  .argName("double;double;double")
+	.argName("double;double;double")
 	.desc("The color function")
 	.build();
 
+    // Julia option
     private static final Option JULIA_OPT =
 	Option.builder("julia")
 	.desc("Julia generation")
 	.build();
 
+    // Mandelbrot option
     private static final Option MANDELBROT_OPT =
 	Option.builder("mandelbrot")
 	.desc("Mandelbrot generation")
@@ -127,10 +135,10 @@ public class App extends Application {
 	.hasArg()
 	.numberOfArgs(2)
 	.valueSeparator(';')
-  .argName("Complex")
+	.argName("Complex")
 	.desc("Sets the value of the Complex constant for divergence." +
-  "Complex format is <double;double> as the first represents the real part " +
-  "of the complex number and the second the imaginary part")
+	      "Complex format is <double;double> as the first represents the real part " +
+	      "of the complex number and the second the imaginary part")
 	.build();
 
     private static final Option ITER_FUN_OPT =
@@ -139,19 +147,20 @@ public class App extends Application {
 	.hasArg()
 	.numberOfArgs(4)
 	.valueSeparator(';')
-  .argName("Complex;Complex")
+	.argName("Complex;Complex")
 	.desc("The iteration function.Takes two complex numbers as argument separated"
-    + " by a ';' the format in the end will be <double;double;double;double>")
+	      + " by a ';' the format in the end will be <double;double;double;double>")
 	.build();
 
+    // Build from file option
     private static final Option BUILD_FROM_FILE_OPT =
-  Option.builder("buildFrom")
-  .longOpt("buildFromFile")
-  .hasArg()
-  .argName("String")
-  .desc("Builds an image from a text file. Takes the filename on /tmp/ " +
-  "as argument (without the extension '.txt'")
-  .build();
+	Option.builder("buildFrom")
+	.longOpt("buildFromFile")
+	.hasArg()
+	.argName("String")
+	.desc("Builds an image from a text file. Takes the filename on /tmp/ " +
+	      "as argument (without the extension '.txt'")
+	.build();
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -197,28 +206,26 @@ public class App extends Application {
 	CommandLineParser parser = new DefaultParser();
 
 	try{
-	    //parsing the commandline
+	    // parsing the commandline
 	    commandLine = parser.parse(options, args);
 
 	    // if -gui or --graphics is present, launch gui version
 	    if(commandLine.hasOption("gui")){
 		launch(args);
-	    }
-      else if(commandLine.hasOption("buildFrom")) {
-        // builds an image from a text file
-        String path = "/tmp/" + commandLine.getOptionValue("buildFrom")+ ".txt";
-  	    Fractal fractal = FractalText.textToImage(path);
-  	    if(fractal != null){
-      		FractalImage fractalImage = FractalImage.of(fractal);
-      		fractalImage.saveFile();
-          System.exit(0);
-        } else {
-          System.out.println("Invalid file");
-        }
-      }
-      else { // launches console version
+	    } else if(commandLine.hasOption("buildFrom")){
+		// builds an image from a text file
+		String path = "/tmp/" + commandLine.getOptionValue("buildFrom")+ ".txt";
+		Fractal fractal = FractalText.textToImage(path);
+		if(fractal != null){
+		    FractalImage fractalImage = FractalImage.of(fractal);
+		    fractalImage.saveFile();
+		    System.exit(0);
+		} else {
+		    System.out.println("Invalid file");
+		}
+	    } else { // launches console version
 
-    // must take exactly one of the two args
+		// must take exactly one of the two args
 		// can only generate one fractal
 		if(commandLine.hasOption("julia")
 		   == commandLine.hasOption("mandelbrot")){
@@ -232,7 +239,7 @@ public class App extends Application {
 
 		    if(commandLine.hasOption("constant")){
 
-			//parsing constant
+			// parsing constant
 			double constantReal =
 			    Double.parseDouble(commandLine
 					       .getOptionValues("constant")[0]);
@@ -246,8 +253,8 @@ public class App extends Application {
 
 		    if(commandLine.hasOption("iterFun")){
 
-			//parsing iterFun
-			//parsing alpha factor
+			// parsing iterFun
+			// parsing alpha factor
 			double alphaReal =
 			    Double.parseDouble(commandLine
 					       .getOptionValues("iterFun")[0]);
@@ -289,18 +296,18 @@ public class App extends Application {
 		    double step =
 			Double.parseDouble(commandLine.getOptionValue("step"));
 		    if(set.equals("julia")){
-          if(step >= 0.13 || step <= 0){
-            System.out.println
-            ("Step for a julia set must be positive and at least 0.13");
-            System.exit(0);
-          }
+			if(step >= 0.13 || step <= 0){
+			    System.out.println
+				("Step for a julia set must be positive and at most 0.13");
+			    System.exit(0);
+			}
 			juliaBuilder.discreteStep(step);
 		    } else if(set.equals("mandelbrot")){
-          if(step >= 0.2 || step <= 0){
-            System.out.println
-            ("Step for a mandelbrot set must be positive and at least 0.2");
-            System.exit(0);
-          }
+			if(step >= 0.2 || step <= 0){
+			    System.out.println
+				("Step for a mandelbrot set must be positive and at most 0.2");
+			    System.exit(0);
+			}
 			mandelbrotBuilder.discreteStep(step);
 		    }
 		}
@@ -411,6 +418,7 @@ public class App extends Application {
 		    fractal = mandelbrotBuilder.build();
 		}
 
+		// saving the file
 		FractalImage fi = FractalImage.of(fractal);
 		System.out.println("Saving...");
 		fi.saveFile();

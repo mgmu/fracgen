@@ -5,7 +5,6 @@ import fractales.model.Fractal;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
-import java.awt.Color;
 
 /**
  * This class represents the image of a Fractal object
