@@ -27,6 +27,7 @@ public class App extends Application {
 	Option.builder("maxIter")
 	.longOpt("maxIteration")
 	.hasArg()
+  .argName("int")
 	.valueSeparator()
 	.desc("Sets the maximal value of iterations for divergence computing")
 	.build();
@@ -35,6 +36,7 @@ public class App extends Application {
 	Option.builder("step")
 	.longOpt("discreteStep")
 	.hasArg()
+  .argName("double")
 	.valueSeparator()
 	.desc("Sets the discrete step value for the Complex plane")
 	.build();
@@ -43,6 +45,7 @@ public class App extends Application {
 	Option.builder("xMin")
 	.hasArg()
 	.valueSeparator()
+  .argName("int")
 	.desc("Sets the minimal value along the x-axis")
 	.build();
 
@@ -50,6 +53,7 @@ public class App extends Application {
 	Option.builder("xMax")
 	.hasArg()
 	.valueSeparator()
+  .argName("int")
 	.desc("Sets the maximal value along the x-axis")
 	.build();
 
@@ -57,6 +61,7 @@ public class App extends Application {
 	Option.builder("yMin")
 	.hasArg()
 	.valueSeparator()
+  .argName("int")
 	.desc("Sets the minimal value along the y-axis")
 	.build();
 
@@ -64,6 +69,7 @@ public class App extends Application {
 	Option.builder("yMax")
 	.hasArg()
 	.valueSeparator()
+  .argName("int")
 	.desc("Sets the maximal value along the y-axis")
 	.build();
 
@@ -72,6 +78,7 @@ public class App extends Application {
 	.longOpt("imageWidth")
 	.hasArg()
 	.valueSeparator()
+  .argName("int")
 	.desc("Sets the width of the image in which to store the fractal")
 	.build();
 
@@ -80,6 +87,7 @@ public class App extends Application {
 	.longOpt("imageHeight")
 	.hasArg()
 	.valueSeparator()
+  .argName("int")
 	.desc("Sets the height of the image in which to store the fractal")
 	.build();
 
@@ -88,6 +96,7 @@ public class App extends Application {
 	.longOpt("filename")
 	.hasArg()
 	.valueSeparator()
+  .argName("String")
 	.desc("Sets the name of the while in which to store the image")
 	.build();
 
@@ -97,7 +106,8 @@ public class App extends Application {
 	.hasArg()
 	.numberOfArgs(3)
 	.valueSeparator(';')
-	.desc("The function color")
+  .argName("double;double;double")
+	.desc("The color function")
 	.build();
 
     private static final Option JULIA_OPT =
@@ -117,7 +127,10 @@ public class App extends Application {
 	.hasArg()
 	.numberOfArgs(2)
 	.valueSeparator(';')
-	.desc("Sets the value of the Complex constant for divergence")
+  .argName("Complex")
+	.desc("Sets the value of the Complex constant for divergence." +
+  "Complex format is <double;double> as the first represents the real part " +
+  "of the complex number and the second the imaginary part")
 	.build();
 
     private static final Option ITER_FUN_OPT =
@@ -126,14 +139,18 @@ public class App extends Application {
 	.hasArg()
 	.numberOfArgs(4)
 	.valueSeparator(';')
-	.desc("The iteration function")
+  .argName("Complex;Complex")
+	.desc("The iteration function.Takes two complex numbers as argument separated"
+    + " by a ';' the format in the end will be <double;double;double;double>")
 	.build();
 
     private static final Option BUILD_FROM_FILE_OPT =
   Option.builder("buildFrom")
   .longOpt("buildFromFile")
   .hasArg()
-  .desc("Builds an image from a text file.")
+  .argName("String")
+  .desc("Builds an image from a text file. Takes the filename on /tmp/ " +
+  "as argument (without the extension '.txt'")
   .build();
 
     @Override
