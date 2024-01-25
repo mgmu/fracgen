@@ -48,3 +48,7 @@ nettement améliorés :
 
 Julia (default parameters) : 60s env. -> 20s env.  
 Mandelbrot (default parameters) : 20s env. -> 10s env.  
+
+## Credit
+Aïmen Hammouche  
+Guillermo Morón Usón
